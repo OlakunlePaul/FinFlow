@@ -49,8 +49,11 @@ export function TransactionsList({ onAddMoney }: { onAddMoney?: () => void } = {
   useEffect(() => {
     if (error) {
       setConnectionIssue(true)
+    } else if (data && !isLoading) {
+      // Reset connection issue when query succeeds
+      setConnectionIssue(false)
     }
-  }, [error, setConnectionIssue])
+  }, [error, data, isLoading, setConnectionIssue])
 
   if (!data && isLoading) {
     return (
