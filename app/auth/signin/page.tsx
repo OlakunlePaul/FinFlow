@@ -54,18 +54,18 @@ export default function SignInPage() {
         return
       }
 
+      // If no error, treat as success (more resilient than requiring result?.ok)
+      // This handles edge cases where result structure might differ
       // Use window.location for a full page reload to ensure session cookie is set
       // This is more reliable on Vercel where cookies need to be properly established
-      if (result?.ok) {
-        toast({
-          title: "Success!",
-          description: "Redirecting to dashboard...",
-          variant: "success",
-        })
-        // Full page reload ensures session cookie is properly set before navigation
-        // This is critical on Vercel where cookie domain/secure settings matter
-        window.location.href = "/dashboard"
-      }
+      toast({
+        title: "Success!",
+        description: "Redirecting to dashboard...",
+        variant: "success",
+      })
+      // Full page reload ensures session cookie is properly set before navigation
+      // This is critical on Vercel where cookie domain/secure settings matter
+      window.location.href = "/dashboard"
     } catch (error) {
       toast({
         title: "Error",
