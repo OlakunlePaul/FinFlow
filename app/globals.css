@@ -27,9 +27,9 @@
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 40%; /* #666666 */
 
-    /* Accent ≈ light blue */
-    --accent: 210 100% 70%; /* #66B2FF-ish */
-    --accent-foreground: 210 10% 13%;
+    /* Accent - matches design token colors.accent (#1D4ED8) */
+    --accent: 217 78% 48%; /* #1D4ED8 */
+    --accent-foreground: 0 0% 100%;
 
     /* Semantic destructive ≈ crimson red */
     --destructive: 348 83% 47%; /* #DC143C */
@@ -56,8 +56,8 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 215 28% 18%;
     --muted-foreground: 0 0% 80%;
-    --accent: 210 100% 60%;
-    --accent-foreground: 215 40% 10%;
+    --accent: 217 78% 48%; /* #1D4ED8 */
+    --accent-foreground: 0 0% 100%;
     --destructive: 348 83% 47%;
     --destructive-foreground: 0 0% 100%;
     --border: 215 28% 24%;
