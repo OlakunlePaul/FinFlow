@@ -92,15 +92,13 @@ export default function SignUpPage() {
       <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 p-4">
         <Card className="w-full max-w-md border-0 bg-white/70 backdrop-blur-xl shadow-2xl">
           <CardHeader className="text-center space-y-2">
-            <div className="flex justify-center mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600">
-                <span className="text-2xl font-bold text-white">F</span>
-              </div>
+            <div className="flex justify-center mb-2">
+              <span className="text-xl font-semibold text-text-strong">FinFlow</span>
             </div>
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Create Account
+            <CardTitle className="text-h2 text-text-strong">
+              Create account
             </CardTitle>
-            <CardDescription className="text-base">
+            <CardDescription className="text-body text-text-muted">
               Sign up to get started with FinFlow
             </CardDescription>
           </CardHeader>

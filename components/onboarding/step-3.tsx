@@ -33,10 +33,10 @@ export function OnboardingStep3() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="mb-4 text-2xl font-semibold">Identity Verification</h2>
-        <p className="text-muted-foreground">
-          Upload a government-issued ID to verify your identity. This helps us keep
-          your account secure.
+        <h2 className="mb-3 text-2xl font-semibold">Identity verification</h2>
+        <p className="text-sm text-muted-foreground">
+          Upload a government-issued ID so we can verify it&apos;s really you. This is required for financial
+          institutions to prevent fraud and comply with anti-money-laundering (AML) regulations.
         </p>
       </div>
 

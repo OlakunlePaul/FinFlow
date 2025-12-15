@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 import Link from "next/link"
 import { sanitizeInput } from "@/lib/utils"
+import { Mail, Lock, Eye, EyeOff, Shield, Loader2 } from "lucide-react"
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -24,6 +25,7 @@ export default function SignInPage() {
   const router = useRouter()
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const {
     register,
@@ -70,117 +72,216 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left side - Image/Visual */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        <div className="relative z-10 flex flex-col justify-center items-center p-12 text-white">
-          <div className="max-w-md text-center">
-            <h2 className="text-4xl font-bold mb-4">Welcome Back</h2>
-            <p className="text-xl opacity-90 mb-8">
-              Manage your finances with ease and security
+    <div className="flex min-h-screen bg-white">
+      {/* Desktop illustration side */}
+      <div className="hidden w-3/5 bg-dark-blue lg:flex">
+        <div className="relative flex w-full items-center justify-center px-12 py-10 text-white">
+          <div className="absolute inset-0 bg-gradient-to-br from-dark-blue-light/40 to-deep-teal-dark/60" />
+          <div className="relative z-10 max-w-md">
+            <h2 className="mb-3 text-h1 lg:text-[2.5rem]">
+              Welcome back to FinFlow
+            </h2>
+            <p className="mb-8 text-body-lg text-light-blue-pale">
+              Track balances, manage virtual cards, and move money across
+              borders in seconds.
             </p>
-            {/* Placeholder for transaction cards image */}
-            <div className="relative w-full max-w-sm aspect-[3/4] rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-8 flex items-center justify-center">
-              <div className="text-center space-y-3">
-                <p className="text-sm opacity-70 mb-4">Your Transactions</p>
-                {[
-                  { amount: '+$1300', desc: 'Payment from Wise', color: 'green' },
-                  { amount: '-$15', desc: 'Capcut Pro', color: 'red' },
-                  { amount: '+$500', desc: 'Salary Payment', color: 'green' },
-                ].map((txn, idx) => (
-                  <div key={idx} className="rounded-lg bg-white/20 p-3 backdrop-blur-sm text-left">
-                    <div className="text-xs opacity-80 mb-1">{txn.desc}</div>
-                    <div className={`text-sm font-bold ${txn.color === 'green' ? 'text-green-300' : 'text-red-300'}`}>
-                      {txn.amount}
-                    </div>
-                  </div>
-                ))}
+            <div className="rounded-2xl bg-dark-blue-dark/60 p-5 shadow-xl ring-1 ring-white/10">
+              <p className="mb-3 text-tiny uppercase tracking-[0.16em] text-light-blue">
+                Today&apos;s snapshot
+              </p>
+              <div className="mb-4 rounded-xl bg-gradient-to-br from-deep-teal to-dark-blue-light px-4 py-3">
+                <p className="text-tiny text-light-blue-pale">Total balance</p>
+                <p className="mt-1 text-2xl font-semibold">$12,345.67</p>
+                <p className="mt-1 text-tiny text-light-blue-pale">
+                  •••• •••• •••• 1234
+                </p>
+              </div>
+              <div className="space-y-2 text-tiny text-gray-lightest">
+                <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2">
+                  <span>Payment from Wise</span>
+                  <span className="font-semibold text-emerald-light">+$1,320</span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2">
+                  <span>Apple iCloud</span>
+                  <span className="font-semibold text-crimson-light">-$9.99</span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2">
+                  <span>USDT → EUR</span>
+                  <span className="font-semibold text-emerald-light">+2.1%</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Right side - Form */}
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 p-4">
-        <Card className="w-full max-w-md border-0 bg-white/70 backdrop-blur-xl shadow-2xl">
-          <CardHeader className="text-center space-y-2">
-            <div className="flex justify-center mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600">
-                <span className="text-2xl font-bold text-white">F</span>
-              </div>
+      {/* Form side */}
+      <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:w-2/5 lg:bg-gray-lightest">
+        <Card className="w-full max-w-md border border-gray-lighter shadow-lg">
+          <CardHeader className="space-y-1 text-center">
+            <div className="mb-2 flex justify-center">
+              <span className="text-xl font-semibold text-text-strong">FinFlow</span>
             </div>
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Welcome Back
-            </CardTitle>
-            <CardDescription className="text-base">
-              Sign in to your FinFlow account
+            <CardTitle className="text-h2 text-text-strong">Sign in</CardTitle>
+            <CardDescription className="text-body text-gray">
+              Access your FinFlow dashboard securely.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              {/* Email */}
               <div>
-                <label htmlFor="email" className="mb-2 block text-sm font-medium">
-                  Email
+                <label className="mb-2 block text-small font-medium text-dark-gray">
+                  Email Address
                 </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  {...register("email")}
-                  className={errors.email ? "border-destructive" : "bg-white/80"}
-                />
+                <div className="relative">
+                  <Mail className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-gray-light" />
+                  <Input
+                    type="email"
+                    placeholder="you@example.com"
+                    {...register("email")}
+                    className={`h-11 rounded-lg border-2 bg-white pl-10 pr-3 text-body ${
+                      errors.email ? "border-crimson-red" : "border-gray-lighter focus:border-light-blue"
+                    }`}
+                  />
+                </div>
                 {errors.email && (
-                  <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>
+                  <p className="mt-1 text-small text-crimson-red">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
+              {/* Password */}
               <div>
-                <label htmlFor="password" className="mb-2 block text-sm font-medium">
+                <label className="mb-2 block text-small font-medium text-dark-gray">
                   Password
                 </label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  {...register("password")}
-                  className={errors.password ? "border-destructive" : "bg-white/80"}
-                />
+                <div className="relative">
+                  <Lock className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-gray-light" />
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    {...register("password")}
+                    className={`h-11 rounded-lg border-2 bg-white pl-10 pr-10 text-body ${
+                      errors.password ? "border-crimson-red" : "border-gray-lighter focus:border-light-blue"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-3 top-2.5 rounded p-1 text-gray hover:bg-gray-lightest"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
                 {errors.password && (
-                  <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>
+                  <p className="mt-1 text-small text-crimson-red">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]" 
+              {/* Forgot password */}
+              <div className="flex justify-end">
+                <Link
+                  href="#"
+                  className="text-small font-medium text-light-blue hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
+
+              {/* Submit */}
+              <Button
+                type="submit"
                 disabled={isSubmitting}
+                className="mt-1 w-full rounded-lg bg-gradient-to-r from-dark-blue to-dark-blue-light py-3 text-small font-semibold text-white hover:shadow-md disabled:opacity-60"
               >
                 {isSubmitting ? (
-                  <>
-                    <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                    Signing in...
-                  </>
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Signing In...
+                  </span>
                 ) : (
                   "Sign In"
                 )}
               </Button>
             </form>
 
-            <div className="mt-6 text-center text-sm">
-              <p className="text-muted-foreground">
-                Don't have an account?{" "}
-                <Link href="/auth/signup" className="font-semibold text-primary hover:underline">
-                  Sign up
-                </Link>
-              </p>
+            {/* Divider */}
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-lighter" />
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-white px-2 text-tiny text-gray">
+                  OR
+                </span>
+              </div>
             </div>
 
-            <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50/50 p-4 text-sm backdrop-blur-sm">
-              <p className="font-semibold mb-2 text-blue-900">Demo Credentials:</p>
-              <p className="text-blue-700">Email: demo@finflow.com</p>
-              <p className="text-blue-700">Password: demo123</p>
+            {/* Social login (placeholder) */}
+            <Button
+              type="button"
+              variant="outline"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border-gray-lighter py-2.5 text-small text-dark-gray hover:bg-gray-lightest"
+              aria-label="Sign in with Google"
+            >
+              <span className="flex h-4 w-4 items-center justify-center rounded-sm bg-white">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-3 w-3"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="#EA4335"
+                    d="M12 10.2v3.9h5.5c-.2 1.2-.9 2.3-2 3.1l3.3 2.6C20.7 18.4 22 15.6 22 12.5 22 11.7 21.9 11 21.8 10.2H12z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M6.8 14.3l-3.1 2.4C5.1 19.2 8.3 21 12 21c2.7 0 4.9-.9 6.5-2.4l-3.3-2.6c-.9.6-2 1-3.2 1-2.5 0-4.6-1.7-5.3-4.1z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M3.7 7.9C3.1 9.1 2.8 10.5 2.8 12s.3 2.9.9 4.1l3.1-2.4C6.5 13 6.4 12.5 6.4 12c0-.5.1-1 .3-1.7L3.7 7.9z"
+                  />
+                  <path
+                    fill="#4285F4"
+                    d="M12 5.2c1.5 0 2.8.5 3.8 1.4l2.8-2.8C17 2.2 14.8 1.3 12 1.3 8.3 1.3 5.1 3.1 3.7 5.9L6.7 8.3C7.4 6 9.5 5.2 12 5.2z"
+                  />
+                </svg>
+              </span>
+              Sign in with Google
+            </Button>
+
+            {/* Sign up link */}
+            <p className="mt-4 text-center text-small text-gray">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/signup"
+                className="font-medium text-light-blue hover:underline"
+              >
+                Sign Up
+              </Link>
+            </p>
+
+            {/* Security badge */}
+            <div className="mt-5 flex items-center justify-center gap-2 text-tiny text-gray-light">
+              <Shield className="h-4 w-4 text-light-blue" />
+              <span>256-bit Encryption • Your data is secure</span>
+            </div>
+
+            {/* Demo credentials helper */}
+            <div className="mt-5 rounded-lg border border-light-blue-pale bg-light-blue-pale/40 px-4 py-3 text-tiny text-dark-gray">
+              <p className="mb-1 font-semibold text-dark-blue">Demo login</p>
+              <p>Email: demo@finflow.com</p>
+              <p>Password: demo123</p>
             </div>
           </CardContent>
         </Card>

@@ -39,9 +39,9 @@ export function OnboardingStep1() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
-        <h2 className="mb-4 text-2xl font-semibold">Create Your Account</h2>
-        <p className="text-muted-foreground">
-          Start by creating a secure account with your email and password.
+        <h2 className="mb-3 text-2xl font-semibold">Create your account</h2>
+        <p className="text-sm text-muted-foreground">
+          We&apos;ll use your email and password to secure your wallet and help us meet basic compliance requirements.
         </p>
       </div>
 
@@ -97,7 +97,11 @@ export function OnboardingStep1() {
         </div>
       </div>
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        className="w-full bg-primary text-text-on-primary hover:bg-primary/90"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? "Processing..." : "Continue"}
       </Button>
     </form>

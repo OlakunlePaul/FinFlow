@@ -18,6 +18,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useToast } from "@/components/ui/use-toast"
 import { useState } from "react"
 import { sanitizeInput } from "@/lib/utils"
+import { AlertTriangle } from "lucide-react"
 
 const transferSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
@@ -38,6 +39,8 @@ export function SendMoneyModal({
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [step, setStep] = useState<"form" | "review">("form")
+  const [reviewData, setReviewData] = useState<TransferForm | null>(null)
 
   const {
     register,
@@ -48,7 +51,20 @@ export function SendMoneyModal({
     resolver: zodResolver(transferSchema),
   })
 
-  const onSubmit = async (data: TransferForm) => {
+  const handleFormSubmit = (data: TransferForm) => {
+    if (data.amount > balance) {
+      toast({
+        title: "Insufficient Balance",
+        description: "You don't have enough funds for this transfer",
+        variant: "destructive",
+      })
+      return
+    }
+    setReviewData(data)
+    setStep("review")
+  }
+
+  const executeTransfer = async (data: TransferForm) => {
     if (data.amount > balance) {
       toast({
         title: "Insufficient Balance",
@@ -88,6 +104,8 @@ export function SendMoneyModal({
 
       reset()
       onOpenChange(false)
+      setStep("form")
+      setReviewData(null)
     } catch (error: any) {
       toast({
         title: "Error",
@@ -101,80 +119,155 @@ export function SendMoneyModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Send Money</DialogTitle>
-          <DialogDescription>
-            Transfer funds to another user or account.
+          <DialogTitle className="text-h3 text-dark-blue">Send Money</DialogTitle>
+          <DialogDescription className="text-small text-gray">
+            {step === "form"
+              ? "Enter recipient and amount details."
+              : "Review and confirm your transfer."}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label htmlFor="recipient" className="mb-2 block text-sm font-medium">
-              Recipient
-            </label>
-            <Input
-              id="recipient"
-              type="text"
-              placeholder="Email or Account Number"
-              {...register("recipient")}
-              className={errors.recipient ? "border-destructive" : ""}
-            />
-            {errors.recipient && (
-              <p className="mt-1 text-sm text-destructive">{errors.recipient.message}</p>
-            )}
-          </div>
 
-          <div>
-            <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-              Amount
-            </label>
-            <Input
-              id="amount"
-              type="number"
-              step="0.01"
-              placeholder="0.00"
-              {...register("amount", { valueAsNumber: true })}
-              className={errors.amount ? "border-destructive" : ""}
-            />
-            {errors.amount && (
-              <p className="mt-1 text-sm text-destructive">{errors.amount.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="description" className="mb-2 block text-sm font-medium">
-              Description (Optional)
-            </label>
-            <Input
-              id="description"
-              type="text"
-              placeholder="Payment for..."
-              {...register("description")}
-            />
-          </div>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting} aria-label="Submit send money form">
-              {isSubmitting ? (
-                <>
-                  <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  Processing...
-                </>
-              ) : (
-                "Send Money"
+        {step === "form" && (
+          <form
+            onSubmit={handleSubmit(handleFormSubmit)}
+            className="space-y-4 py-2"
+          >
+            <div>
+              <label className="mb-2 block text-small font-medium text-dark-gray">
+                Recipient
+              </label>
+              <Input
+                type="text"
+                placeholder="Email or account number"
+                {...register("recipient")}
+                className={`h-10 rounded-lg border-2 bg-white text-small ${
+                  errors.recipient ? "border-crimson-red" : "border-gray-lighter focus:border-light-blue"
+                }`}
+              />
+              {errors.recipient && (
+                <p className="mt-1 text-small text-crimson-red">
+                  {errors.recipient.message}
+                </p>
               )}
-            </Button>
-          </DialogFooter>
-        </form>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-small font-medium text-dark-gray">
+                Amount
+              </label>
+              <div className="relative">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray">
+                  $
+                </span>
+                <Input
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  {...register("amount", { valueAsNumber: true })}
+                  className={`h-11 rounded-lg border-2 bg-white pl-7 text-small ${
+                    errors.amount ? "border-crimson-red" : "border-gray-lighter focus:border-light-blue"
+                  }`}
+                />
+              </div>
+              {errors.amount && (
+                <p className="mt-1 text-small text-crimson-red">
+                  {errors.amount.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="mb-2 block text-small font-medium text-dark-gray">
+                Note (optional)
+              </label>
+              <Input
+                type="text"
+                placeholder="Add a note for the recipient"
+                {...register("description")}
+                className="h-10 rounded-lg border-2 border-gray-lighter bg-white text-small focus:border-light-blue"
+              />
+            </div>
+
+            <DialogFooter className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isSubmitting}
+                className="w-full rounded-lg border-gray-lighter sm:w-auto"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full rounded-lg bg-gradient-to-r from-dark-blue to-dark-blue-light text-white sm:w-auto"
+              >
+                Continue
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
+
+        {step === "review" && reviewData && (
+          <div className="space-y-5 py-2 text-small text-dark-gray">
+            <div className="rounded-lg bg-gray-lightest px-4 py-3 space-y-2">
+              <div className="flex justify-between">
+                <span className="text-gray">To</span>
+                <span className="font-medium">{reviewData.recipient}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray">Amount</span>
+                <span className="font-semibold">
+                  ${reviewData.amount.toFixed(2)}
+                </span>
+              </div>
+              {reviewData.description && (
+                <div className="pt-1 border-t border-gray-lighter mt-1">
+                  <span className="text-gray">Note</span>
+                  <p className="mt-1 text-small">{reviewData.description}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-start gap-2 rounded-lg bg-gold-light/15 px-3 py-3 text-tiny text-dark-gray">
+              <AlertTriangle className="mt-0.5 h-4 w-4 text-gold-dark" />
+              <p>
+                Please confirm the recipient and amount. Transfers may not be
+                reversible once sent.
+              </p>
+            </div>
+
+            <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setStep("form")}
+                disabled={isSubmitting}
+                className="w-full rounded-lg border-gray-lighter sm:w-auto"
+              >
+                Back
+              </Button>
+              <Button
+                type="button"
+                disabled={isSubmitting}
+                onClick={() => reviewData && executeTransfer(reviewData)}
+                className="w-full rounded-lg bg-gradient-to-r from-dark-blue to-dark-blue-light text-white sm:w-auto"
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    Sending...
+                  </>
+                ) : (
+                  "Send Money"
+                )}
+              </Button>
+            </DialogFooter>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   )

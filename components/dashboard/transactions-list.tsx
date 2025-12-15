@@ -4,8 +4,16 @@ import { useQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { formatCurrency, formatDate } from "@/lib/utils"
-import { ArrowDownCircle, ArrowUpCircle, Filter, ChevronLeft, ChevronRight } from "lucide-react"
-import { useState } from "react"
+import {
+  ArrowDownCircle,
+  ArrowUpCircle,
+  Filter,
+  ChevronLeft,
+  ChevronRight,
+  Wallet,
+} from "lucide-react"
+import { useEffect, useState } from "react"
+import { useUiStore } from "@/lib/store/ui-store"
 
 async function fetchTransactions(page = 1, status?: string, type?: string, category?: string) {
   const params = new URLSearchParams({
@@ -22,23 +30,31 @@ async function fetchTransactions(page = 1, status?: string, type?: string, categ
   return data
 }
 
-export function TransactionsList() {
+export function TransactionsList({ onAddMoney }: { onAddMoney?: () => void } = {}) {
   const [page, setPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined)
   const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined)
+  const { setConnectionIssue } = useUiStore()
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, dataUpdatedAt, isFetching } = useQuery({
     queryKey: ["transactions", page, statusFilter, typeFilter],
     queryFn: () => fetchTransactions(page, statusFilter, typeFilter),
     refetchInterval: 30000, // Refetch every 30 seconds
+    staleTime: 60_000,
   })
 
   const transactions = data?.transactions || []
   const totalPages = data?.totalPages || 1
 
-  if (isLoading) {
+  useEffect(() => {
+    if (error) {
+      setConnectionIssue(true)
+    }
+  }, [error, setConnectionIssue])
+
+  if (!data && isLoading) {
     return (
-      <Card className="border-0 bg-white/70 backdrop-blur-xl shadow-2xl">
+      <Card className="border border-border-subtle bg-surface-raised shadow-md">
         <CardHeader>
           <CardTitle className="text-xl font-bold">Recent Transactions</CardTitle>
         </CardHeader>
@@ -62,9 +78,19 @@ export function TransactionsList() {
 
   if (error) {
     return (
-      <Card className="border-0 bg-white/70 backdrop-blur-xl shadow-2xl">
+      <Card className="border border-border-subtle bg-surface-raised shadow-md">
         <CardHeader>
-          <CardTitle className="text-xl font-bold">Recent Transactions</CardTitle>
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+            <CardTitle className="text-h3 text-text-strong">
+              Recent transactions
+            </CardTitle>
+            {dataUpdatedAt ? (
+              <p className="text-tiny text-text-muted">
+                Updated{" "}
+                {isFetching ? "just now" : "a few moments ago"}
+              </p>
+            ) : null}
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-destructive">Failed to load transactions</p>
@@ -74,17 +100,20 @@ export function TransactionsList() {
   }
 
   return (
-    <Card className="border-0 bg-white/70 backdrop-blur-xl shadow-2xl transition-all hover:shadow-3xl">
-      <CardHeader className="border-b border-white/20">
+      <Card className="border border-border-subtle bg-surface-raised shadow-md">
+      <CardHeader className="border-b border-border-subtle">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle className="text-xl font-bold">Recent Transactions</CardTitle>
+          <CardTitle className="text-h3 text-text-strong">
+            Recent transactions
+          </CardTitle>
           <div className="flex flex-wrap items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
+            <Filter className="h-4 w-4 text-text-muted" aria-hidden="true" />
             <Button
               variant={statusFilter === undefined ? "default" : "outline"}
               size="sm"
               onClick={() => setStatusFilter(undefined)}
-              className={statusFilter === undefined ? "bg-gradient-to-r from-blue-600 to-indigo-600" : ""}
+              className={statusFilter === undefined ? "bg-primary text-text-on-primary" : ""}
+              aria-label="Show all transaction statuses"
             >
               All
             </Button>
@@ -92,7 +121,8 @@ export function TransactionsList() {
               variant={statusFilter === "completed" ? "default" : "outline"}
               size="sm"
               onClick={() => setStatusFilter("completed")}
-              className={statusFilter === "completed" ? "bg-gradient-to-r from-blue-600 to-indigo-600" : ""}
+              className={statusFilter === "completed" ? "bg-primary text-text-on-primary" : ""}
+              aria-label="Show completed transactions"
             >
               Completed
             </Button>
@@ -100,7 +130,8 @@ export function TransactionsList() {
               variant={statusFilter === "pending" ? "default" : "outline"}
               size="sm"
               onClick={() => setStatusFilter("pending")}
-              className={statusFilter === "pending" ? "bg-gradient-to-r from-blue-600 to-indigo-600" : ""}
+              className={statusFilter === "pending" ? "bg-primary text-text-on-primary" : ""}
+              aria-label="Show pending transactions"
             >
               Pending
             </Button>
@@ -111,7 +142,8 @@ export function TransactionsList() {
             variant={typeFilter === undefined ? "default" : "outline"}
             size="sm"
             onClick={() => setTypeFilter(undefined)}
-            className={typeFilter === undefined ? "bg-gradient-to-r from-blue-600 to-indigo-600" : ""}
+              className={typeFilter === undefined ? "bg-primary text-text-on-primary" : ""}
+              aria-label="Show all transaction types"
           >
             All Types
           </Button>
@@ -119,7 +151,8 @@ export function TransactionsList() {
             variant={typeFilter === "fund" ? "default" : "outline"}
             size="sm"
             onClick={() => setTypeFilter("fund")}
-            className={typeFilter === "fund" ? "bg-gradient-to-r from-blue-600 to-indigo-600" : ""}
+              className={typeFilter === "fund" ? "bg-primary text-text-on-primary" : ""}
+              aria-label="Show deposit transactions"
           >
             Deposits
           </Button>
@@ -127,7 +160,8 @@ export function TransactionsList() {
             variant={typeFilter === "transfer" ? "default" : "outline"}
             size="sm"
             onClick={() => setTypeFilter("transfer")}
-            className={typeFilter === "transfer" ? "bg-gradient-to-r from-blue-600 to-indigo-600" : ""}
+              className={typeFilter === "transfer" ? "bg-primary text-text-on-primary" : ""}
+              aria-label="Show transfer transactions"
           >
             Transfers
           </Button>
@@ -136,33 +170,57 @@ export function TransactionsList() {
       <CardContent className="p-6">
         <div className="space-y-3">
           {transactions.length === 0 ? (
-            <div className="py-12 text-center">
-              <p className="text-muted-foreground">No transactions found</p>
-              {(statusFilter || typeFilter) && (
-                <Button
-                  variant="link"
-                  className="mt-2"
-                  onClick={() => {
-                    setStatusFilter(undefined)
-                    setTypeFilter(undefined)
-                  }}
-                >
-                  Clear filters
-                </Button>
-              )}
+            <div className="flex flex-col items-center gap-3 py-10 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-base text-primary">
+                <Wallet className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="text-small font-medium text-text-strong">
+                  No transactions yet
+                </p>
+                <p className="mt-1 text-tiny text-text-muted">
+                  When you add or send money, your activity will appear here.
+                </p>
+              </div>
+              <div className="mt-2 flex flex-col gap-2">
+                {onAddMoney && (
+                  <Button
+                    size="sm"
+                    className="rounded-md bg-primary px-4 text-text-on-primary hover:bg-primary/90"
+                    onClick={onAddMoney}
+                    aria-label="Add money to get started"
+                  >
+                    Add money to get started
+                  </Button>
+                )}
+                {(statusFilter || typeFilter) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-tiny text-text-muted"
+                    aria-label="Clear transaction filters"
+                    onClick={() => {
+                      setStatusFilter(undefined)
+                      setTypeFilter(undefined)
+                    }}
+                  >
+                    Clear filters
+                  </Button>
+                )}
+              </div>
             </div>
           ) : (
             <>
               {transactions.map((txn: any) => (
                 <div
                   key={txn.id}
-                  className="group flex items-center gap-4 rounded-xl border border-white/20 bg-white/40 p-4 backdrop-blur-sm transition-all hover:bg-white/60 hover:shadow-lg hover:scale-[1.01]"
+                  className="flex items-center gap-4 rounded-lg border border-border-subtle bg-surface-base px-4 py-3 transition-fast ease-standard hover:bg-surface-raised"
                 >
                   <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-xl transition-all group-hover:scale-110 ${
+                    className={`flex h-9 w-9 items-center justify-center rounded-full border text-sm ${
                       txn.amount > 0
-                        ? "bg-gradient-to-br from-green-100 to-emerald-100 text-green-700 shadow-sm"
-                        : "bg-gradient-to-br from-red-100 to-rose-100 text-red-700 shadow-sm"
+                        ? "border-success text-success"
+                        : "border-danger text-danger"
                     }`}
                   >
                     {txn.amount > 0 ? (
@@ -172,38 +230,35 @@ export function TransactionsList() {
                     )}
                   </div>
                   <div className="flex-1">
-                    <div className="font-semibold text-foreground">{txn.description}</div>
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                    <div className="text-small font-medium text-text-strong">
+                      {txn.description}
+                    </div>
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-tiny text-text-muted">
                       <span>{formatDate(txn.date)}</span>
                       {txn.category && (
-                        <>
-                          <span>•</span>
-                          <span className="rounded-full bg-white/60 px-2.5 py-0.5 text-xs font-medium backdrop-blur-sm">
-                            {txn.category}
-                          </span>
-                        </>
+                        <span className="rounded-full bg-surface-raised px-2 py-0.5 text-[11px] font-medium">
+                          {txn.category}
+                        </span>
                       )}
                       {txn.status && (
-                        <>
-                          <span>•</span>
-                          <span
-                            className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                              txn.status === "completed"
-                                ? "bg-green-50 text-green-700"
-                                : txn.status === "pending"
-                                ? "bg-yellow-50 text-yellow-700"
-                                : "bg-red-50 text-red-700"
-                            }`}
-                          >
-                            {txn.status}
-                          </span>
-                        </>
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                            txn.status === "completed"
+                              ? "bg-success-soft text-success"
+                              : txn.status === "pending"
+                              ? "bg-warning-soft text-warning"
+                              : "bg-danger-soft text-danger"
+                          }`}
+                          aria-label={`Status: ${txn.status}`}
+                        >
+                          {txn.status}
+                        </span>
                       )}
                     </div>
                   </div>
                   <div
-                    className={`text-lg font-bold ${
-                      txn.amount > 0 ? "text-green-600" : "text-red-600"
+                    className={`text-small font-semibold ${
+                      txn.amount > 0 ? "text-success" : "text-danger"
                     }`}
                   >
                     {txn.amount > 0 ? "+" : ""}

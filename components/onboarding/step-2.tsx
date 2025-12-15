@@ -52,9 +52,10 @@ export function OnboardingStep2() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
-        <h2 className="mb-4 text-2xl font-semibold">Personal Information</h2>
-        <p className="text-muted-foreground">
-          Tell us a bit about yourself to complete your profile.
+        <h2 className="mb-3 text-2xl font-semibold">Personal information</h2>
+        <p className="text-sm text-muted-foreground">
+          We&apos;re required by law to collect basic details about you to comply with KYC/AML regulations and determine
+          which countries we can support.
         </p>
       </div>
 
@@ -76,8 +77,9 @@ export function OnboardingStep2() {
         </div>
 
         <div>
-          <label htmlFor="dob" className="mb-2 block text-sm font-medium">
-            Date of Birth
+          <label htmlFor="dob" className="mb-1 block text-sm font-medium">
+            Date of birth{" "}
+            <span className="text-xs font-normal text-muted-foreground">(you must be at least 18 years old)</span>
           </label>
           <Input
             id="dob"
@@ -91,8 +93,11 @@ export function OnboardingStep2() {
         </div>
 
         <div>
-          <label htmlFor="address" className="mb-2 block text-sm font-medium">
-            Address
+          <label htmlFor="address" className="mb-1 block text-sm font-medium">
+            Address{" "}
+            <span className="text-xs font-normal text-muted-foreground">
+              (include city, state, ZIP/postcode, and country)
+            </span>
           </label>
           <Input
             id="address"

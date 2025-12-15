@@ -1,33 +1,50 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Shield, Zap, Globe, CreditCard, Lock, CheckCircle2 } from "lucide-react"
+import { ArrowRight, Shield, Globe, CreditCard, Lock } from "lucide-react"
+
+const features = [
+  {
+    icon: Shield,
+    title: "Global Accounts",
+    description: "Open USD, EUR, GBP accounts instantly.",
+  },
+  {
+    icon: CreditCard,
+    title: "Virtual Cards",
+    description: "Create unlimited virtual cards for online purchases.",
+  },
+  {
+    icon: Globe,
+    title: "Crypto Exchange",
+    description: "Convert between 50+ currencies and cryptocurrencies.",
+  },
+  {
+    icon: Lock,
+    title: "Fast Transfers",
+    description: "Send money worldwide in minutes, not days.",
+  },
+]
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Animated background */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-gradient-to-br from-blue-400/20 to-purple-400/20 blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-br from-indigo-400/20 to-pink-400/20 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-      </div>
-
+    <div className="flex min-h-screen flex-col bg-white">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/20 bg-white/70 backdrop-blur-xl shadow-sm">
-        <div className="container mx-auto flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600">
-              <span className="text-lg font-bold text-white">F</span>
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              FinFlow
-            </h1>
+      <header className="sticky top-0 z-40 border-b border-gray-lighter bg-white/90 backdrop-blur-md">
+        <div className="container flex flex-wrap items-center justify-between gap-3 px-4 py-4 lg:flex-nowrap lg:px-6">
+          <div className="flex items-center">
+            <span className="text-lg font-semibold lg:text-xl">FinFlow</span>
           </div>
-          <nav className="flex items-center gap-3">
-            <Link href="/auth/signin">
-              <Button variant="ghost" className="hover:bg-white/80">Sign In</Button>
+          <nav className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <Link href="/login">
+              <Button
+                variant="ghost"
+                className="text-text-default hover:bg-surface-base hover:text-text-strong"
+              >
+                Sign In
+              </Button>
             </Link>
-            <Link href="/auth/signup">
-              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg hover:shadow-xl transition-all hover:scale-105">
+            <Link href="/signup">
+              <Button className="bg-accent px-5 py-2 text-sm font-semibold text-text-on-primary hover:bg-accent/90">
                 Get Started
               </Button>
             </Link>
@@ -36,239 +53,258 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative flex flex-1 items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 px-4 py-20">
-        <div className="container relative mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left side - Text Content */}
-            <div className="text-center lg:text-left">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/60 px-4 py-2 text-sm backdrop-blur-sm shadow-sm">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
-                <span className="font-medium">Trusted by freelancers worldwide</span>
-              </div>
-              
-              <h2 className="mb-6 text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl">
-                Modern Fintech
-                <br />
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  Made Simple
-                </span>
-              </h2>
-              
-              <p className="mb-8 text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 md:text-2xl">
-                Experience the future of digital banking with FinFlow. Secure,
-                fast, and designed for the modern world.
-              </p>
-              
-              <div className="flex flex-col items-center justify-center gap-4 sm:flex-row lg:justify-start">
-                <Link href="/auth/signup">
-                  <Button size="lg" className="gap-2 text-lg px-8 py-6 h-auto bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg hover:shadow-xl transition-all hover:scale-105">
-                    Get Started
-                    <ArrowRight className="h-5 w-5" />
-                  </Button>
-                </Link>
-                <Link href="/auth/signin">
-                  <Button size="lg" variant="outline" className="text-lg px-8 py-6 h-auto border-2 bg-white/60 backdrop-blur-sm hover:bg-white/80">
-                    Sign In
-                  </Button>
-                </Link>
-              </div>
+      <section className="relative flex flex-1 items-center bg-primary px-4 py-12 text-text-on-primary lg:py-20">
+        <div className="container grid gap-10 lg:grid-cols-2 lg:items-center">
+          {/* Text */}
+          <div className="max-w-xl">
+            <p className="mb-4 text-tiny uppercase tracking-[0.18em] text-light-blue">
+              For freelancers, small teams, and everyday users
+            </p>
+            <h1 className="text-hero leading-tight lg:text-[3.5rem]">
+              One global account for work and life money
+            </h1>
+            <p className="mt-4 text-body-lg text-light-blue">
+              Get paid in multiple currencies, hold balances, and send money worldwide from a single, secure wallet.
+            </p>
+
+            {/* Inline journey summary */}
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-tiny text-light-blue/80">
+              <span className="rounded-full bg-surface-base/10 px-2 py-0.5 font-medium text-text-on-primary">
+                1. Create account
+              </span>
+              <span className="text-light-blue/60">›</span>
+              <span className="rounded-full bg-surface-base/10 px-2 py-0.5 font-medium text-text-on-primary">
+                2. Add or receive money
+              </span>
+              <span className="text-light-blue/60">›</span>
+              <span className="rounded-full bg-surface-base/10 px-2 py-0.5 font-medium text-text-on-primary">
+                3. Spend and move funds
+              </span>
             </div>
 
-            {/* Right side - Image/Visual */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-md">
-                {/* Placeholder for tablet with transaction cards image */}
-                <div className="relative rounded-3xl border-8 border-gray-800 bg-gray-900 p-6 shadow-2xl transform hover:scale-105 transition-transform duration-300">
-                  <div className="aspect-[3/4] w-full rounded-lg bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-white/10 relative overflow-hidden">
-                    {/* Floating transaction cards */}
-                    <div className="absolute inset-0 p-4">
-                      {/* Transaction cards floating around */}
-                      {[
-                        { top: '5%', left: '0%', amount: '+$1300', desc: 'Payment from Wise', color: 'green' },
-                        { top: '20%', left: '-5%', amount: '-$15', desc: 'Capcut Pro', color: 'red' },
-                        { top: '35%', left: '0%', amount: '-$80', desc: 'Apple iCloud', color: 'red' },
-                        { top: '10%', right: '0%', amount: '-$120', desc: 'Aliexpress', color: 'red' },
-                        { top: '25%', right: '-5%', amount: '+$500', desc: 'Salary Payment', color: 'green' },
-                        { top: '45%', right: '0%', amount: '+$270', desc: 'Upwork', color: 'green' },
-                        { bottom: '10%', right: '0%', amount: '-$80', desc: 'Shein Shopping', color: 'red' },
-                      ].map((card, idx) => (
-                        <div
-                          key={idx}
-                          className="absolute rounded-xl bg-white/90 backdrop-blur-md p-3 shadow-lg w-28 transform hover:scale-110 transition-transform z-10"
-                          style={{
-                            top: card.top,
-                            bottom: card.bottom,
-                            left: card.left,
-                            right: card.right,
-                          }}
-                        >
-                          <div className="text-xs font-medium text-gray-600 mb-1 truncate">{card.desc}</div>
-                          <div className={`text-sm font-bold ${card.color === 'green' ? 'text-green-600' : 'text-red-600'}`}>
-                            {card.amount}
-                          </div>
-                        </div>
-                      ))}
-                      {/* Central tablet screen */}
-                      <div className="absolute inset-0 flex items-center justify-center z-0">
-                        <div className="text-center text-white/80">
-                          <CreditCard className="mx-auto mb-2 h-12 w-12" />
-                          <p className="text-xs">FinFlow Dashboard</p>
-                        </div>
-                      </div>
-                    </div>
+            <div className="mt-4 flex flex-wrap gap-2 text-tiny text-primary/10">
+              <span className="rounded-full bg-surface-base/10 px-3 py-1 text-text-on-primary/80">
+                Freelancers & creators
+              </span>
+              <span className="rounded-full bg-surface-base/10 px-3 py-1 text-text-on-primary/80">
+                Remote teams & SMEs
+              </span>
+              <span className="rounded-full bg-surface-base/10 px-3 py-1 text-text-on-primary/80">
+                Everyday consumers
+              </span>
+            </div>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/signup" className="flex-1">
+                <Button className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent py-3 text-sm font-semibold text-text-on-primary hover:bg-accent/90">
+                  Get Started
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/login" className="flex-1">
+                <Button
+                  variant="outline"
+                  className="w-full rounded-lg border border-white bg-white text-sm font-semibold text-dark-blue hover:bg-gray-lightest"
+                >
+                  Sign In
+                </Button>
+              </Link>
+            </div>
+
+            <p className="mt-4 text-small text-gray-light">
+              Bank-level security • 256-bit encryption
+            </p>
+          </div>
+
+          {/* Hero Visual – hidden on small screens */}
+          <div className="hidden md:block">
+            <div className="mx-auto w-full max-w-md rounded-3xl bg-dark-blue-dark/60 p-5 shadow-2xl ring-1 ring-white/10">
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-deep-teal to-dark-blue-light p-5">
+                {/* Simulated balance card */}
+                <div className="mb-6 rounded-2xl bg-gradient-to-br from-dark-blue-light to-deep-teal px-5 py-4 shadow-lg">
+                  <div className="flex items-center justify-between text-tiny text-light-blue">
+                    <span>Total Balance</span>
+                    <span>Multi-currency</span>
+                  </div>
+                  <p className="mt-2 text-3xl font-bold text-white">$12,345.67</p>
+                  <p className="mt-1 text-small text-light-blue">
+                    •••• •••• •••• 1234
+                  </p>
+                </div>
+
+                {/* Small floating cards (light skeuomorphism) */}
+                <div className="space-y-2 text-tiny text-gray-lightest">
+                  <div className="flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 backdrop-blur">
+                    <span>Payment from Wise</span>
+                    <span className="font-semibold text-emerald-light">
+                      +$1,320
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 backdrop-blur">
+                    <span>Virtual card top-up</span>
+                    <span className="font-semibold text-crimson-light">
+                      -$80
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 backdrop-blur">
+                    <span>USDT to EUR exchange</span>
+                    <span className="font-semibold text-emerald-light">
+                      +2.5%
+                    </span>
                   </div>
                 </div>
-                {/* Decorative elements */}
-                <div className="absolute -z-10 -top-4 -right-4 h-32 w-32 rounded-full bg-gradient-to-br from-blue-400/30 to-purple-400/30 blur-2xl" />
-                <div className="absolute -z-10 -bottom-4 -left-4 h-32 w-32 rounded-full bg-gradient-to-br from-indigo-400/30 to-pink-400/30 blur-2xl" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="border-t border-white/20 bg-white/50 backdrop-blur-sm py-20">
-        <div className="container mx-auto px-4">
-          <h3 className="mb-4 text-center text-3xl font-bold md:text-4xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            Why Choose FinFlow?
-          </h3>
-          <p className="mb-12 text-center text-muted-foreground text-lg">
-            Everything you need for modern financial management
-          </p>
-          
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <div className="group rounded-2xl border border-white/20 bg-white/70 backdrop-blur-xl p-6 text-center transition-all hover:shadow-2xl hover:-translate-y-2 hover:bg-white/80">
-              <div className="mb-4 flex justify-center">
-                <div className="rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 p-4 transition-transform group-hover:scale-110 group-hover:rotate-3">
-                  <Shield className="h-8 w-8 text-blue-600" />
-                </div>
+      {/* Product overview strip (features + trust) */}
+      <section className="bg-white px-4 py-12 lg:py-16">
+        <div className="container">
+          <div className="text-center">
+            <h2 className="text-h2 text-dark-blue">Everything you need in one place</h2>
+            <p className="mt-2 text-body text-gray">
+              Rich, intuitive experiences for your daily money, backed by enterprise‑grade safeguards.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-10 lg:grid-cols-3 lg:items-start">
+            {/* Feature cards */}
+            <div className="space-y-6 lg:col-span-2">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {features.map(({ icon: Icon, title, description }) => (
+                  <div
+                    key={title}
+                    className="rounded-2xl border border-gray-lighter bg-white p-6 shadow-sm transition-transform transition-shadow hover:-translate-y-1 hover:shadow-md"
+                  >
+                    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-light-blue-pale">
+                      <Icon className="h-5 w-5 text-light-blue-dark" />
+                    </div>
+                    <h3 className="text-h3 text-dark-gray">{title}</h3>
+                    <p className="mt-2 text-body text-gray">{description}</p>
+                  </div>
+                ))}
               </div>
-              <h4 className="mb-2 text-xl font-semibold">Bank-Level Security</h4>
-              <p className="text-muted-foreground text-sm">
-                End-to-end encryption and multi-factor authentication to keep your
-                money safe.
-              </p>
             </div>
-            
-            <div className="group rounded-2xl border border-white/20 bg-white/70 backdrop-blur-xl p-6 text-center transition-all hover:shadow-2xl hover:-translate-y-2 hover:bg-white/80">
-              <div className="mb-4 flex justify-center">
-                <div className="rounded-2xl bg-gradient-to-br from-yellow-100 to-orange-100 p-4 transition-transform group-hover:scale-110 group-hover:rotate-3">
-                  <Zap className="h-8 w-8 text-orange-600" />
-                </div>
+
+            {/* Trust / compliance column */}
+            <aside className="space-y-4 rounded-2xl border border-gray-lighter bg-gray-lightest px-5 py-6">
+              <p className="text-small font-semibold text-dark-blue">
+                Built for serious money workflows
+              </p>
+              <p className="text-small text-gray">
+                FinFlow is designed with patterns used by modern banks and payment platforms, so your teams and
+                clients feel at home from day one.
+              </p>
+              <div className="mt-2 grid grid-cols-3 gap-3 text-center text-tiny text-gray md:grid-cols-3">
+                {["NovaBank", "AtlasPay", "GlobeX"].map((name) => (
+                  <div
+                    key={name}
+                    className="flex h-10 items-center justify-center rounded-lg border border-gray-lighter bg-white text-gray-light"
+                  >
+                    {name}
+                  </div>
+                ))}
               </div>
-              <h4 className="mb-2 text-xl font-semibold">Lightning Fast</h4>
-              <p className="text-muted-foreground text-sm">
-                Instant transfers and real-time updates. No waiting, no delays.
-              </p>
-            </div>
-            
-            <div className="group rounded-2xl border border-white/20 bg-white/70 backdrop-blur-xl p-6 text-center transition-all hover:shadow-2xl hover:-translate-y-2 hover:bg-white/80">
-              <div className="mb-4 flex justify-center">
-                <div className="rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 p-4 transition-transform group-hover:scale-110 group-hover:rotate-3">
-                  <Globe className="h-8 w-8 text-green-600" />
-                </div>
+              <div className="mt-3 space-y-2 text-tiny text-gray">
+                <p className="font-medium text-dark-blue">Safety & reliability</p>
+                <ul className="space-y-1">
+                  {["PCI‑style card handling", "256‑bit SSL everywhere", "Read‑only demo data (no real funds)"].map(
+                    (item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 rounded-full bg-light-blue" aria-hidden="true" />
+                        <span>{item}</span>
+                      </li>
+                    )
+                  )}
+                </ul>
               </div>
-              <h4 className="mb-2 text-xl font-semibold">Global Reach</h4>
-              <p className="text-muted-foreground text-sm">
-                Send and receive money anywhere in the world, anytime.
-              </p>
-            </div>
-            
-            <div className="group rounded-2xl border border-white/20 bg-white/70 backdrop-blur-xl p-6 text-center transition-all hover:shadow-2xl hover:-translate-y-2 hover:bg-white/80">
-              <div className="mb-4 flex justify-center">
-                <div className="rounded-2xl bg-gradient-to-br from-purple-100 to-pink-100 p-4 transition-transform group-hover:scale-110 group-hover:rotate-3">
-                  <CreditCard className="h-8 w-8 text-purple-600" />
-                </div>
-              </div>
-              <h4 className="mb-2 text-xl font-semibold">Virtual Cards</h4>
-              <p className="text-muted-foreground text-sm">
-                Create and manage virtual cards instantly for secure online payments.
-              </p>
-            </div>
+            </aside>
           </div>
         </div>
       </section>
 
-      {/* Trust Indicators Section */}
-      <section className="border-t bg-muted/50 py-12">
-        <div className="container mx-auto px-4">
-          <p className="mb-6 text-center text-sm font-medium text-muted-foreground">
-            Trusted by leading financial institutions
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 opacity-60">
-            {/* Trust logo placeholders */}
-            {["Bank Security", "PCI Compliant", "256-bit SSL", "ISO Certified"].map((badge) => (
+      {/* Stats strip */}
+      <section className="bg-surface-base py-8">
+        <div className="container px-4">
+          <div className="grid grid-cols-2 gap-4 text-center text-small text-text-muted md:grid-cols-4">
+            {[
+              { value: "$2B+", label: "Total volume (demo)" },
+              { value: "150+", label: "Countries represented" },
+              { value: "99.9%", label: "Target uptime" },
+              { value: "24/7", label: "Monitoring & alerts" },
+            ].map((stat) => (
               <div
-                key={badge}
-                className="flex items-center gap-2 rounded-lg border bg-white px-4 py-2"
+                key={stat.label}
+                className="rounded-lg border border-border-subtle bg-surface-raised px-4 py-4"
               >
-                <Lock className="h-4 w-4" />
-                <span className="text-sm font-medium">{badge}</span>
+                <p className="text-h2 text-text-strong">{stat.value}</p>
+                <p className="mt-1 text-small text-text-muted">{stat.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="border-t border-white/20 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 py-16 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        <div className="container relative mx-auto px-4 text-center z-10">
-          <h3 className="mb-4 text-3xl font-bold md:text-4xl">
-            Ready to get started?
-          </h3>
-          <p className="mb-8 text-lg opacity-90">
-            Join thousands of users managing their finances with FinFlow
-          </p>
-          <Link href="/auth/signup">
-            <Button size="lg" variant="secondary" className="gap-2 text-lg px-8 py-6 h-auto bg-white text-blue-600 hover:bg-white/90 shadow-xl hover:shadow-2xl transition-all hover:scale-105">
-              Create Your Account
-              <ArrowRight className="h-5 w-5" />
-            </Button>
-          </Link>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="border-t border-white/20 bg-white/50 backdrop-blur-sm py-12">
-        <div className="container mx-auto px-4">
+      <footer className="bg-primary py-10 text-text-on-primary">
+        <div className="container px-4">
           <div className="grid gap-8 md:grid-cols-4">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600">
-                  <span className="text-lg font-bold text-white">F</span>
-                </div>
-                <h4 className="text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">FinFlow</h4>
+              <div className="mb-4 flex items-center">
+                <span className="text-base font-semibold">FinFlow</span>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Modern fintech platform for freelancers and remote workers.
+              <p className="text-small text-text-muted">
+                A modern demo platform for cross-border money, built with real
+                world UX patterns.
               </p>
             </div>
+
             <div>
-              <h4 className="mb-4 text-sm font-semibold">Product</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link></li>
-                <li><Link href="/auth/signup" className="hover:text-foreground transition-colors">Get Started</Link></li>
+              <p className="mb-3 text-small font-semibold">Product</p>
+              <ul className="space-y-2 text-small text-text-muted">
+                <li>
+                  <Link href="/dashboard" className="hover:underline">
+                    Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/signup" className="hover:underline">
+                    Get Started
+                  </Link>
+                </li>
               </ul>
             </div>
+
             <div>
-              <h4 className="mb-4 text-sm font-semibold">Company</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Security</a></li>
+              <p className="mb-3 text-small font-semibold">Company</p>
+              <ul className="space-y-2 text-small text-text-muted">
+                <li>
+                  <button className="text-left hover:underline">About</button>
+                </li>
+                <li>
+                  <button className="text-left hover:underline">Security</button>
+                </li>
               </ul>
             </div>
+
             <div>
-              <h4 className="mb-4 text-sm font-semibold">Legal</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Terms</a></li>
+              <p className="mb-3 text-small font-semibold">Legal</p>
+              <ul className="space-y-2 text-small text-text-muted">
+                <li>
+                  <button className="text-left hover:underline">Privacy</button>
+                </li>
+                <li>
+                  <button className="text-left hover:underline">Terms</button>
+                </li>
               </ul>
             </div>
           </div>
-          <div className="mt-8 border-t border-white/20 pt-8 text-center text-sm text-muted-foreground">
-            <p>© 2024 FinFlow. Built with Next.js 14 and modern web technologies.</p>
+
+          <div className="mt-8 border-t border-border-subtle/40 pt-6 text-center text-tiny text-text-muted">
+            © {new Date().getFullYear()} FinFlow. Demo application for
+            educational purposes only.
           </div>
         </div>
       </footer>
