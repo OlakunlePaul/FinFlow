@@ -58,7 +58,6 @@ const config = {
         // token-based semantic palette
         primary: colors.primary,
         "primary-soft": colors.primarySoft,
-        accent: colors.accent,
         "accent-soft": colors.accentSoft,
         success: colors.success,
         "success-soft": colors.successSoft,

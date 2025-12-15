@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, keepPreviousData } from "@tanstack/react-query"
 import { format } from "date-fns"
 import {
   ArrowLeftRight,
@@ -53,7 +53,7 @@ export default function TransactionsPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["transactions-page", page, search],
     queryFn: () => fetchTransactions({ page, search }),
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   })
 
   const transactions: Transaction[] = data?.transactions ?? []
