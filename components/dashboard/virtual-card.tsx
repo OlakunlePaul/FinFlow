@@ -32,7 +32,7 @@ export function VirtualCard() {
         aria-label={isFlipped ? "Flip card to front" : "Flip card to back"}
       >
         {/* Front of Card */}
-        <Card className="card-flip-front h-full w-full overflow-hidden border border-border-subtle bg-primary text-text-on-primary shadow-md">
+        <Card className="card-flip-front h-full w-full overflow-hidden border border-border-subtle bg-primary text-text-on-primary shadow-md transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
           <div className="relative flex h-full flex-col p-5 md:p-6">
             {/* Top row: logo + chip + contactless */}
             <div className="mb-5 flex items-start justify-between gap-4">

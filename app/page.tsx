@@ -1,5 +1,10 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { RippleButton } from "@/components/ui/ripple-button"
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect"
+import { ParticlesBackground } from "@/components/ui/particles-background"
+import { GradientText } from "@/components/ui/gradient-text"
+import { ShimmeringText } from "@/components/ui/shimmering-text"
 import { ArrowRight, Shield, Globe, CreditCard, Lock } from "lucide-react"
 
 const features = [
@@ -53,15 +58,25 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative flex flex-1 items-center bg-primary px-4 py-12 text-text-on-primary lg:py-20">
-        <div className="container grid gap-10 lg:grid-cols-2 lg:items-center">
+      <section className="relative flex flex-1 items-center bg-primary px-4 py-12 text-text-on-primary lg:py-20 overflow-hidden">
+        <ParticlesBackground
+          className="opacity-30"
+          quantity={30}
+          color="rgba(255, 255, 255, 0.15)"
+        />
+        <div className="container relative z-10 grid gap-10 lg:grid-cols-2 lg:items-center">
           {/* Text */}
           <div className="max-w-xl">
             <p className="mb-4 text-tiny uppercase tracking-[0.18em] text-light-blue">
               For freelancers, small teams, and everyday users
             </p>
             <h1 className="text-hero leading-tight lg:text-[3.5rem]">
-              One global account for work and life money
+              <TextGenerateEffect
+                words="One global account for work and life money"
+                className="text-text-on-primary"
+                cursorClassName="bg-text-on-primary"
+                duration={20}
+              />
             </h1>
             <p className="mt-4 text-body-lg text-light-blue">
               Get paid in multiple currencies, hold balances, and send money worldwide from a single, secure wallet.
@@ -96,18 +111,22 @@ export default function HomePage() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link href="/signup" className="flex-1">
-                <Button className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent py-3 text-sm font-semibold text-text-on-primary hover:bg-accent/90">
+                <RippleButton
+                  rippleColor="rgba(255, 255, 255, 0.3)"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent py-3 text-sm font-semibold text-text-on-primary hover:bg-accent/90"
+                >
                   Get Started
                   <ArrowRight className="h-4 w-4" />
-                </Button>
+                </RippleButton>
               </Link>
               <Link href="/login" className="flex-1">
-                <Button
+                <RippleButton
+                  rippleColor="rgba(15, 23, 42, 0.1)"
                   variant="outline"
                   className="w-full rounded-lg border border-white bg-white text-sm font-semibold text-dark-blue hover:bg-gray-lightest"
                 >
                   Sign In
-                </Button>
+                </RippleButton>
               </Link>
             </div>
 
@@ -163,9 +182,15 @@ export default function HomePage() {
       <section className="bg-white px-4 py-12 lg:py-16">
         <div className="container">
           <div className="text-center">
-            <h2 className="text-h2 text-dark-blue">Everything you need in one place</h2>
+            <h2 className="text-h2 text-dark-blue">
+              <GradientText gradientFrom="from-primary" gradientTo="to-accent" animate>
+                Everything you need in one place
+              </GradientText>
+            </h2>
             <p className="mt-2 text-body text-gray">
-              Rich, intuitive experiences for your daily money, backed by enterprise‑grade safeguards.
+              <ShimmeringText>
+                Rich, intuitive experiences for your daily money, backed by enterprise‑grade safeguards.
+              </ShimmeringText>
             </p>
           </div>
 
@@ -181,7 +206,11 @@ export default function HomePage() {
                     <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-light-blue-pale">
                       <Icon className="h-5 w-5 text-light-blue-dark" />
                     </div>
-                    <h3 className="text-h3 text-dark-gray">{title}</h3>
+                    <h3 className="text-h3 text-dark-gray">
+                      <GradientText gradientFrom="from-primary" gradientTo="to-accent">
+                        {title}
+                      </GradientText>
+                    </h3>
                     <p className="mt-2 text-body text-gray">{description}</p>
                   </div>
                 ))}

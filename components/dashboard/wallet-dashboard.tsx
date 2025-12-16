@@ -26,18 +26,26 @@ import { useWalletStore } from "@/lib/store/wallet-store"
 import { useOnboardingStore } from "@/lib/store/onboarding-store"
 import { useUiStore } from "@/lib/store/ui-store"
 import { Button } from "@/components/ui/button"
+import { RippleButton } from "@/components/ui/ripple-button"
+import { MagneticButton } from "@/components/ui/magnetic-button"
+import { CountingNumber } from "@/components/ui/counting-number"
+import { Sparkles } from "@/components/ui/sparkles"
+import { BackgroundBeams } from "@/components/ui/background-beams"
+import { GradientText } from "@/components/ui/gradient-text"
 import { exportTransactionsCsv } from "@/lib/transactions/export-csv"
 
 function KpiRow() {
   const items = [
-    { label: "This week", value: "$3.45k", change: "+6.4%" },
-    { label: "This month", value: "$12.9k", change: "-3.1%" },
-    { label: "Upcoming", value: "$14.4k", change: "+10.3%" },
+    { label: "This week", value: 3.45, change: "+6.4%", isPositive: true },
+    { label: "This month", value: 12.9, change: "-3.1%", isPositive: false },
+    { label: "Upcoming", value: 14.4, change: "+10.3%", isPositive: true },
   ]
 
   return (
     <section aria-label="Account summary" className="space-y-3">
-      <h3 className="text-sm font-semibold text-text-strong">Account summary</h3>
+      <h3 className="text-sm font-semibold">
+        <GradientText className="text-text-strong">Account summary</GradientText>
+      </h3>
       <p className="text-tiny text-text-muted">
         Sample performance metrics for this demo environment.
       </p>
@@ -45,15 +53,29 @@ function KpiRow() {
         {items.map((item) => (
           <div
             key={item.label}
-            className="rounded-lg border border-border-subtle bg-surface-raised px-4 py-4"
+            className="relative overflow-hidden rounded-lg border border-border-subtle bg-surface-raised px-4 py-4 transition-all duration-300 hover:shadow-md hover:border-primary/20"
           >
+            {item.isPositive && (
+              <Sparkles
+                count={15}
+                color="rgba(21, 128, 61, 0.3)"
+                size={3}
+                className="opacity-50"
+              />
+            )}
             <p className="text-xs font-medium text-text-muted">{item.label}</p>
             <p className="mt-2 text-lg font-semibold text-text-strong">
-              {item.value}
+              <CountingNumber
+                value={item.value}
+                duration={2000}
+                decimals={2}
+                prefix="$"
+                suffix="k"
+              />
             </p>
             <p
               className={`mt-1 text-xs font-medium ${
-                item.change.startsWith("+")
+                item.isPositive
                   ? "text-emerald-green"
                   : "text-crimson-red"
               }`}
@@ -62,7 +84,7 @@ function KpiRow() {
                 className="mr-1 inline-flex h-5 w-5 items-center justify-center rounded-full border border-gray-lighter text-[10px]"
                 aria-hidden="true"
               >
-                {item.change.startsWith("+") ? "↑" : "↓"}
+                {item.isPositive ? "↑" : "↓"}
               </span>
               <span>{item.change} vs last period</span>
             </p>
@@ -104,7 +126,9 @@ export function WalletDashboard() {
   }, [idUploaded, currentStep, setAlerts])
 
   return (
-    <div className="min-h-screen bg-surface-base">
+    <div className="relative min-h-screen bg-surface-base overflow-hidden">
+      {/* Subtle background effect */}
+      <BackgroundBeams className="opacity-10" />
       {/* Desktop top navigation */}
       <nav className="hidden border-b border-border-subtle bg-primary text-text-on-primary md:block">
         <div className="container flex h-20 items-center justify-between px-4">
@@ -194,9 +218,9 @@ export function WalletDashboard() {
             <div>
               <h2 className="text-h2 text-text-strong">
                 Welcome back,{" "}
-                <span className="font-semibold text-primary">
+                <GradientText className="font-semibold">
                   {session?.user?.name || "User"}
-                </span>
+                </GradientText>
               </h2>
               <p className="mt-1 text-small text-text-muted">
                 Here&apos;s a snapshot of your wallets, cards, and activity.
@@ -337,22 +361,25 @@ export function WalletDashboard() {
                 Common money tasks for your main wallet.
               </p>
               <div className="space-y-3">
-                <Button
+                <RippleButton
+                  rippleColor="rgba(255, 255, 255, 0.3)"
                   className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-small font-semibold text-text-on-primary transition-fast hover:bg-primary/90"
                   onClick={() => setShowAddMoney(true)}
                 >
                   <Plus className="h-4 w-4" />
                   Add Money
-                </Button>
-                <Button
+                </RippleButton>
+                <MagneticButton
+                  magneticStrength={0.2}
                   variant="outline"
                   className="flex w-full items-center justify-center gap-2 rounded-lg border-border-subtle py-2.5 text-small font-semibold text-text-strong hover:bg-surface-base"
                   onClick={() => setShowSendMoney(true)}
                 >
                   <Send className="h-4 w-4" />
                   Send Money
-                </Button>
-                <Button
+                </MagneticButton>
+                <MagneticButton
+                  magneticStrength={0.2}
                   variant="outline"
                   className="flex w-full items-center justify-center gap-2 rounded-lg border-border-subtle py-2.5 text-small font-medium text-text-default hover:bg-surface-base"
                   onClick={() => exportTransactionsCsv()}
@@ -360,7 +387,7 @@ export function WalletDashboard() {
                 >
                   <Download className="h-4 w-4" />
                   Download statement (CSV)
-                </Button>
+                </MagneticButton>
               </div>
             </div>
           </aside>

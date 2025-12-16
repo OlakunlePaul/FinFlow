@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib/utils"
 import { Plus, Send } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import { CountingNumber } from "@/components/ui/counting-number"
+import { RippleButton } from "@/components/ui/ripple-button"
+import { Spinner } from "@/components/ui/spinner"
 
 async function fetchBalance() {
   const res = await fetch("/api/transactions")
@@ -77,14 +80,22 @@ export function BalanceCard({
               Total balance
             </p>
             {isLoading ? (
-              <div className="mt-2 h-9 w-40 animate-pulse rounded bg-surface-subtle" />
+              <div className="mt-2 flex items-center gap-2">
+                <div className="h-9 w-32 animate-pulse rounded bg-surface-subtle" />
+                <Spinner size="sm" />
+              </div>
             ) : (
               <p
                 className={`mt-1 text-3xl font-semibold tracking-tight text-text-strong transition-standard ease-standard ${
                   highlight ? "bg-primary-soft px-1 py-0.5 rounded" : ""
                 }`}
               >
-                {formatCurrency(displayBalance)}
+                <CountingNumber
+                  value={displayBalance}
+                  duration={1500}
+                  decimals={2}
+                  prefix="$"
+                />
               </p>
             )}
           </div>
@@ -113,7 +124,8 @@ export function BalanceCard({
         </div>
 
         <div className="flex flex-col gap-2 md:flex-row md:items-center">
-          <Button
+          <RippleButton
+            rippleColor="rgba(255, 255, 255, 0.3)"
             onClick={onAddMoney}
             className="flex-1 gap-2 rounded-md bg-primary text-text-on-primary transition-fast ease-standard hover:bg-primary/90"
             size="lg"
@@ -121,8 +133,9 @@ export function BalanceCard({
           >
             <Plus className="h-5 w-5" />
             Add Money
-          </Button>
-          <Button
+          </RippleButton>
+          <RippleButton
+            rippleColor="rgba(15, 23, 42, 0.1)"
             onClick={onSendMoney}
             variant="outline"
             className="flex-1 gap-2 rounded-md border border-border-subtle bg-surface-raised text-text-default transition-fast ease-standard hover:bg-surface-base"
@@ -131,7 +144,7 @@ export function BalanceCard({
           >
             <Send className="h-5 w-5" />
             Send Money
-          </Button>
+          </RippleButton>
         </div>
 
         <p className="mt-2 text-tiny text-text-muted">

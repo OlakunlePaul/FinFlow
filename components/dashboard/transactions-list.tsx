@@ -3,6 +3,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Spinner } from "@/components/ui/spinner"
+import { Meteors } from "@/components/ui/meteors"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import {
   ArrowDownCircle,
@@ -65,12 +68,12 @@ export function TransactionsList({ onAddMoney }: { onAddMoney?: () => void } = {
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex items-center gap-4">
-                <div className="h-12 w-12 animate-pulse rounded-full bg-gradient-to-br from-muted to-muted/50" />
+                <Skeleton className="h-12 w-12 rounded-full" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 w-32 animate-pulse rounded bg-gradient-to-r from-muted to-muted/50" />
-                  <div className="h-3 w-24 animate-pulse rounded bg-gradient-to-r from-muted to-muted/50" />
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-24" />
                 </div>
-                <div className="h-6 w-20 animate-pulse rounded bg-gradient-to-r from-muted to-muted/50" />
+                <Skeleton className="h-6 w-20" />
               </div>
             ))}
           </div>
@@ -173,11 +176,12 @@ export function TransactionsList({ onAddMoney }: { onAddMoney?: () => void } = {
       <CardContent className="p-6">
         <div className="space-y-3">
           {transactions.length === 0 ? (
-            <div className="flex flex-col items-center gap-3 py-10 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-base text-primary">
-                <Wallet className="h-6 w-6" aria-hidden="true" />
+            <div className="relative flex flex-col items-center gap-3 py-10 text-center overflow-hidden rounded-lg">
+              <Meteors number={10} className="opacity-30" />
+              <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-surface-base text-primary">
+                <Wallet className="h-6 w-6 animate-pulse-gentle" aria-hidden="true" />
               </div>
-              <div>
+              <div className="relative z-10">
                 <p className="text-small font-medium text-text-strong">
                   No transactions yet
                 </p>
@@ -185,7 +189,7 @@ export function TransactionsList({ onAddMoney }: { onAddMoney?: () => void } = {
                   When you add or send money, your activity will appear here.
                 </p>
               </div>
-              <div className="mt-2 flex flex-col gap-2">
+              <div className="relative z-10 mt-2 flex flex-col gap-2">
                 {onAddMoney && (
                   <Button
                     size="sm"
@@ -214,10 +218,10 @@ export function TransactionsList({ onAddMoney }: { onAddMoney?: () => void } = {
             </div>
           ) : (
             <>
-              {transactions.map((txn: any) => (
+              {transactions.map((txn: any, index: number) => (
                 <div
                   key={txn.id}
-                  className="flex items-center gap-4 rounded-lg border border-border-subtle bg-surface-base px-4 py-3 transition-fast ease-standard hover:bg-surface-raised"
+                  className="stagger-item flex items-center gap-4 rounded-lg border border-border-subtle bg-surface-base px-4 py-3 transition-fast ease-standard hover:bg-surface-raised"
                 >
                   <div
                     className={`flex h-9 w-9 items-center justify-center rounded-full border text-sm ${
