@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import motionDesignSystem from "@/motion-design-system.json"
+import { motionDesignSystem } from "@/lib/config/motion-design-system"
 
 // Export spring presets from the JSON
 export const springPresets = motionDesignSystem.physics.spring_presets
