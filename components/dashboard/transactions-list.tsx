@@ -1,5 +1,6 @@
 "use client"
 
+import { motion, Variants } from "framer-motion"
 import { useQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -17,6 +18,7 @@ import {
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useUiStore } from "@/lib/store/ui-store"
+import { springPresets } from "@/lib/hooks/use-motion-config"
 
 async function fetchTransactions(page = 1, status?: string, type?: string, category?: string) {
   const params = new URLSearchParams({
@@ -217,17 +219,41 @@ export function TransactionsList({ onAddMoney }: { onAddMoney?: () => void } = {
               </div>
             </div>
           ) : (
-            <>
-              {transactions.map((txn: any, index: number) => (
-                <div
-                  key={txn.id}
-                  className="stagger-item flex items-center gap-4 rounded-lg border border-border-subtle bg-surface-base px-4 py-3 transition-fast ease-standard hover:bg-surface-raised"
-                  style={
-                    {
-                      "--stagger-delay": `${Math.min(index * 0.05, 0.5)}s`,
-                    } as React.CSSProperties
-                  }
-                >
+            <motion.div
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: 0.05,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="visible"
+              className="space-y-3"
+            >
+              {transactions.map((txn: any) => {
+                const itemVariants: Variants = {
+                  hidden: {
+                    opacity: 0,
+                    y: 10,
+                  },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: {
+                      type: "spring",
+                      ...springPresets.gentle,
+                    },
+                  },
+                }
+
+                return (
+                  <motion.div
+                    key={txn.id}
+                    variants={itemVariants}
+                    className="flex items-center gap-4 rounded-lg border border-border-subtle bg-surface-base px-4 py-3 transition-all duration-200 ease-out md:hover:scale-[1.01] md:hover:bg-surface-raised"
+                  >
                   <div
                     className={`flex h-9 w-9 items-center justify-center rounded-full border text-sm ${
                       txn.amount > 0
@@ -276,8 +302,9 @@ export function TransactionsList({ onAddMoney }: { onAddMoney?: () => void } = {
                     {txn.amount > 0 ? "+" : ""}
                     {formatCurrency(Math.abs(txn.amount))}
                   </div>
-                </div>
-              ))}
+                  </motion.div>
+                )
+              })}
               
               {/* Pagination */}
               {totalPages > 1 && (
@@ -307,7 +334,7 @@ export function TransactionsList({ onAddMoney }: { onAddMoney?: () => void } = {
                   </Button>
                 </div>
               )}
-            </>
+            </motion.div>
           )}
         </div>
       </CardContent>

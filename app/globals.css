@@ -270,5 +270,28 @@
   .animate-beam-path {
     animation: beam-path 4s ease-in-out infinite;
   }
+
+  /* Toast slide-down animation with heavy spring bounce */
+  @keyframes toast-slide-down {
+    0% {
+      transform: translateY(-100px) scale(0.8);
+      opacity: 0;
+    }
+    60% {
+      transform: translateY(10px) scale(1.05);
+      opacity: 1;
+    }
+    80% {
+      transform: translateY(-5px) scale(0.98);
+    }
+    100% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-toast-slide-down {
+    animation: toast-slide-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
 }
 

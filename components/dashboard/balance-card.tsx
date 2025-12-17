@@ -3,12 +3,12 @@
 import { useQuery } from "@tanstack/react-query"
 import { useWalletStore } from "@/lib/store/wallet-store"
 import { useUiStore } from "@/lib/store/ui-store"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { CardContent } from "@/components/ui/card"
+import { CardWithEffects } from "@/components/ui/card-with-effects"
 import { formatCurrency } from "@/lib/utils"
 import { Plus, Send } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-import { CountingNumber } from "@/components/ui/counting-number"
+import { NumberTicker } from "@/components/ui/number-ticker"
 import { RippleButton } from "@/components/ui/ripple-button"
 import { Spinner } from "@/components/ui/spinner"
 
@@ -72,7 +72,7 @@ export function BalanceCard({
   }, [balance])
 
   return (
-    <Card className="border border-border-subtle bg-surface-raised shadow-md">
+    <CardWithEffects className="border border-border-subtle bg-surface-raised shadow-md">
       <CardContent className="p-6 md:p-7">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
@@ -90,11 +90,10 @@ export function BalanceCard({
                   highlight ? "bg-primary-soft px-1 py-0.5 rounded" : ""
                 }`}
               >
-                <CountingNumber
+                <NumberTicker
                   value={displayBalance}
-                  duration={1500}
+                  duration={2000}
                   decimals={2}
-                  prefix="$"
                 />
               </p>
             )}
@@ -151,6 +150,6 @@ export function BalanceCard({
           Add money to top up your main wallet, or send funds to another account.
         </p>
       </CardContent>
-    </Card>
+    </CardWithEffects>
   )
 }

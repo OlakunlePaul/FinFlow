@@ -1,10 +1,16 @@
+"use client"
+
 import Link from "next/link"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { RippleButton } from "@/components/ui/ripple-button"
-import { TextGenerateEffect } from "@/components/ui/text-generate-effect"
+import { AnimatedText } from "@/components/ui/animated-text"
+import { FloatingOrb } from "@/components/ui/floating-orb"
+import { MagneticLinkButton } from "@/components/ui/magnetic-link-button"
 import { ParticlesBackground } from "@/components/ui/particles-background"
 import { GradientText } from "@/components/ui/gradient-text"
 import { ShimmeringText } from "@/components/ui/shimmering-text"
+import { springPresets } from "@/lib/hooks/use-motion-config"
 import { ArrowRight, Shield, Globe, CreditCard, Lock } from "lucide-react"
 
 const features = [
@@ -61,6 +67,7 @@ export default function HomePage() {
       <main>
       {/* Hero Section */}
       <section className="relative flex flex-1 items-center bg-primary px-4 py-12 text-text-on-primary lg:py-20 overflow-hidden">
+        <FloatingOrb size={800} blur={120} opacity={0.2} />
         <ParticlesBackground
           className="opacity-30"
           quantity={30}
@@ -73,12 +80,13 @@ export default function HomePage() {
               For freelancers, small teams, and everyday users
             </p>
             <h1 className="text-hero leading-tight lg:text-[3.5rem]">
-              <TextGenerateEffect
-                words="One global account for work and life money"
+              <AnimatedText
+                staggerDelay={0.05}
+                initialY={20}
                 className="text-text-on-primary"
-                cursorClassName="bg-text-on-primary"
-                duration={10}
-              />
+              >
+                One global account for work and life money
+              </AnimatedText>
             </h1>
             <p className="mt-4 text-body-lg text-light-blue">
               Get paid in multiple currencies, hold balances, and send money worldwide from a single, secure wallet.
@@ -112,7 +120,11 @@ export default function HomePage() {
             </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/signup" className="flex-1">
+              <MagneticLinkButton
+                href="/signup"
+                magneticStrength={0.2}
+                className="flex-1"
+              >
                 <RippleButton
                   rippleColor="rgba(255, 255, 255, 0.3)"
                   className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent py-3 text-sm font-semibold text-text-on-primary hover:bg-accent/90"
@@ -120,7 +132,7 @@ export default function HomePage() {
                   Get Started
                   <ArrowRight className="h-4 w-4" />
                 </RippleButton>
-              </Link>
+              </MagneticLinkButton>
               <Link href="/login" className="flex-1">
                 <RippleButton
                   rippleColor="rgba(15, 23, 42, 0.1)"
@@ -200,9 +212,17 @@ export default function HomePage() {
             {/* Feature cards */}
             <div className="space-y-6 lg:col-span-2">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {features.map(({ icon: Icon, title, description }) => (
-                  <div
+                {features.map(({ icon: Icon, title, description }, index) => (
+                  <motion.div
                     key={title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{
+                      type: "spring",
+                      ...springPresets.gentle,
+                      delay: index * 0.1,
+                    }}
                     className="rounded-2xl border border-gray-lighter bg-white p-6 shadow-sm transition-transform transition-shadow hover:-translate-y-1 hover:shadow-md"
                   >
                     <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-light-blue-pale">
@@ -214,7 +234,7 @@ export default function HomePage() {
                       </GradientText>
                     </h3>
                     <p className="mt-2 text-body text-gray">{description}</p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>

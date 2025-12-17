@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { SlideToSubmit } from "@/components/ui/slide-to-submit"
+import { SuccessModal } from "@/components/ui/success-modal"
 import { useWalletStore } from "@/lib/store/wallet-store"
 import { useQueryClient } from "@tanstack/react-query"
 import { useToast } from "@/components/ui/use-toast"
@@ -41,6 +43,8 @@ export function SendMoneyModal({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [step, setStep] = useState<"form" | "review">("form")
   const [reviewData, setReviewData] = useState<TransferForm | null>(null)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [successData, setSuccessData] = useState<{ amount: number; recipient: string } | null>(null)
 
   const {
     register,
@@ -96,11 +100,9 @@ export function SendMoneyModal({
       queryClient.invalidateQueries({ queryKey: ["transactions"] })
       queryClient.invalidateQueries({ queryKey: ["balance"] })
 
-      toast({
-        title: "Success!",
-        description: `$${data.amount.toFixed(2)} sent to ${data.recipient}`,
-        variant: "success",
-      })
+      // Show success modal instead of toast
+      setSuccessData({ amount: data.amount, recipient: data.recipient })
+      setShowSuccessModal(true)
 
       reset()
       onOpenChange(false)
@@ -240,7 +242,7 @@ export function SendMoneyModal({
               </p>
             </div>
 
-            <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <DialogFooter className="flex flex-col gap-4">
               <Button
                 type="button"
                 variant="outline"
@@ -250,7 +252,8 @@ export function SendMoneyModal({
               >
                 Back
               </Button>
-              <Button
+              {/* Standard submit button - commented out in favor of SlideToSubmit */}
+              {/* <Button
                 type="button"
                 disabled={isSubmitting}
                 onClick={() => reviewData && executeTransfer(reviewData)}
@@ -264,11 +267,29 @@ export function SendMoneyModal({
                 ) : (
                   "Send Money"
                 )}
-              </Button>
+              </Button> */}
+              <SlideToSubmit
+                onSubmit={() => reviewData && executeTransfer(reviewData)}
+                disabled={isSubmitting}
+                label="Slide to send money"
+                completedLabel="Sending..."
+              />
             </DialogFooter>
           </div>
         )}
       </DialogContent>
+
+      {/* Success Modal */}
+      {successData && (
+        <SuccessModal
+          open={showSuccessModal}
+          onOpenChange={setShowSuccessModal}
+          title="Transaction Successful!"
+          description="Your money has been sent successfully."
+          amount={successData.amount}
+          recipient={successData.recipient}
+        />
+      )}
     </Dialog>
   )
 }

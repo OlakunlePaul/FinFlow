@@ -6,6 +6,7 @@ import { z } from "zod"
 import { useOnboardingStore } from "@/lib/store/onboarding-store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { AnimatedInputWrapper } from "@/components/ui/animated-input-wrapper"
 import { sanitizeInput } from "@/lib/utils"
 
 const step1Schema = z.object({
@@ -46,10 +47,9 @@ export function OnboardingStep1() {
       </div>
 
       <div className="space-y-4">
-        <div>
-          <label htmlFor="email" className="mb-2 block text-sm font-medium">
-            Email Address
-          </label>
+        <AnimatedInputWrapper
+          label="Email Address"
+        >
           <Input
             id="email"
             type="email"
@@ -57,15 +57,14 @@ export function OnboardingStep1() {
             {...register("email")}
             className={errors.email ? "border-destructive" : ""}
           />
-          {errors.email && (
-            <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>
-          )}
-        </div>
+        </AnimatedInputWrapper>
+        {errors.email && (
+          <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>
+        )}
 
-        <div>
-          <label htmlFor="password" className="mb-2 block text-sm font-medium">
-            Password
-          </label>
+        <AnimatedInputWrapper
+          label="Password"
+        >
           <Input
             id="password"
             type="password"
@@ -73,15 +72,14 @@ export function OnboardingStep1() {
             {...register("password")}
             className={errors.password ? "border-destructive" : ""}
           />
-          {errors.password && (
-            <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>
-          )}
-        </div>
+        </AnimatedInputWrapper>
+        {errors.password && (
+          <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>
+        )}
 
-        <div>
-          <label htmlFor="confirmPassword" className="mb-2 block text-sm font-medium">
-            Confirm Password
-          </label>
+        <AnimatedInputWrapper
+          label="Confirm Password"
+        >
           <Input
             id="confirmPassword"
             type="password"
@@ -89,12 +87,12 @@ export function OnboardingStep1() {
             {...register("confirmPassword")}
             className={errors.confirmPassword ? "border-destructive" : ""}
           />
-          {errors.confirmPassword && (
-            <p className="mt-1 text-sm text-destructive">
-              {errors.confirmPassword.message}
-            </p>
-          )}
-        </div>
+        </AnimatedInputWrapper>
+        {errors.confirmPassword && (
+          <p className="mt-1 text-sm text-destructive">
+            {errors.confirmPassword.message}
+          </p>
+        )}
       </div>
 
       <Button
