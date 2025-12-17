@@ -201,7 +201,14 @@ export function SlideToSubmit({
           style={{
             x: springX,
           }}
-          whilePan={{ scale: 1.05 }}
+          animate={{
+            scale: isDragging ? 1.05 : 1,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 20,
+          }}
         >
           {isLoading ? (
             <Spinner size="sm" className="text-white" />

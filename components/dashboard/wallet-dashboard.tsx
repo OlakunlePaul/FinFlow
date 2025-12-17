@@ -44,7 +44,7 @@ function KpiRow() {
   return (
     <section aria-label="Account summary" className="space-y-3">
       <h3 className="text-sm font-semibold">
-        <GradientText className="text-text-strong">Account summary</GradientText>
+        <GradientText>Account summary</GradientText>
       </h3>
       <p className="text-tiny text-text-muted">
         Sample performance metrics for this demo environment.
@@ -251,7 +251,7 @@ export function WalletDashboard() {
               type="button"
               className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface-raised px-3 py-1 text-tiny font-medium text-text-default hover:bg-surface-base focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               aria-label="Select account"
-              aria-expanded={accountMenuOpen}
+              {...(accountMenuOpen && { "aria-expanded": true })}
               onClick={() => setAccountMenuOpen((open) => !open)}
             >
               <span>Primary USD wallet</span>

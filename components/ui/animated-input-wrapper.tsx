@@ -27,20 +27,19 @@ export function AnimatedInputWrapper({
   // Clone children to add focus/blur handlers
   const childrenWithHandlers = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
+      // Extract handlers from current child props to avoid stale closures
+      const childProps = child.props as { onFocus?: (e: React.FocusEvent) => void; onBlur?: (e: React.FocusEvent) => void }
+      const originalOnFocus = childProps.onFocus
+      const originalOnBlur = childProps.onBlur
+
       return React.cloneElement(child as React.ReactElement<any>, {
         onFocus: (e: React.FocusEvent) => {
           handleFocus()
-          if (child && typeof child === "object" && "props" in child) {
-            const childProps = (child as React.ReactElement).props
-            childProps.onFocus?.(e)
-          }
+          originalOnFocus?.(e)
         },
         onBlur: (e: React.FocusEvent) => {
           handleBlur()
-          if (child && typeof child === "object" && "props" in child) {
-            const childProps = (child as React.ReactElement).props
-            childProps.onBlur?.(e)
-          }
+          originalOnBlur?.(e)
         },
       })
     }
