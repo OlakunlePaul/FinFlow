@@ -13,6 +13,9 @@ const fadeInUp = {
   transition: { duration: 0.5, ease: easing },
 }
 
+// JSON payload for code example
+const jsonPayload = `{` + `"amount": 1000, "currency": "USD"` + `}`
+
 export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
@@ -164,7 +167,7 @@ export default function HomePage() {
                         Welcome back, <span className="text-primary">John Doe</span>
             </h2>
                       <p className="mt-2 text-sm text-text-muted">
-                        Here's a snapshot of your wallets, cards, and activity.
+                        Here&apos;s a snapshot of your wallets, cards, and activity.
             </p>
           </div>
 
@@ -456,26 +459,28 @@ export default function HomePage() {
                     </div>
                     <div className="ml-4">
                       <span className="text-slate-500">-H</span>{" "}
-                      <span className="text-yellow-400">"Authorization: Bearer sk_live_..."</span>
+                      <span className="text-yellow-400">&quot;Authorization: Bearer sk_live_...&quot;</span>
                     </div>
                     <div className="ml-4">
                       <span className="text-slate-500">-d</span>{" "}
-                      <span className="text-cyan-400">'{"{"}"amount": 1000, "currency": "USD"{"}"}'</span>
+                      <span className="text-cyan-400">
+                        &apos;{jsonPayload}&apos;
+                      </span>
                     </div>
                     <div className="mt-4">
                       <span className="text-slate-500">{">"}</span>{" "}
                       <span className="text-green-400">{"{"}</span>
                     </div>
                     <div className="ml-4 text-slate-400">
-                      <span className="text-blue-400">"id"</span>:{" "}
-                      <span className="text-yellow-400">"txn_abc123"</span>,
+                      <span className="text-blue-400">&quot;id&quot;</span>:{" "}
+                      <span className="text-yellow-400">&quot;txn_abc123&quot;</span>,
                     </div>
                     <div className="ml-4 text-slate-400">
-                      <span className="text-blue-400">"status"</span>:{" "}
-                      <span className="text-green-400">"completed"</span>,
+                      <span className="text-blue-400">&quot;status&quot;</span>:{" "}
+                      <span className="text-green-400">&quot;completed&quot;</span>,
                     </div>
                     <div className="ml-4 text-slate-400">
-                      <span className="text-blue-400">"amount"</span>:{" "}
+                      <span className="text-blue-400">&quot;amount&quot;</span>:{" "}
                       <span className="text-cyan-400">1000</span>
                     </div>
                     <div>
