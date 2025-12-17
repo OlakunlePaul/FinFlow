@@ -9,8 +9,10 @@ import { formatCurrency } from "@/lib/utils"
 import { Plus, Send } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { NumberTicker } from "@/components/ui/number-ticker"
-import { RippleButton } from "@/components/ui/ripple-button"
+import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
+import { motion } from "framer-motion"
+import { springPresets } from "@/lib/hooks/use-motion-config"
 
 async function fetchBalance() {
   const res = await fetch("/api/transactions")
@@ -61,8 +63,8 @@ export function BalanceCard({
     if (prevBalanceRef.current !== undefined && prevBalanceRef.current !== balance) {
       setHighlight(true)
       setShowBadge(true)
-      const timeout = setTimeout(() => setHighlight(false), 200)
-      const badgeTimeout = setTimeout(() => setShowBadge(false), 2200)
+      const timeout = setTimeout(() => setHighlight(false), 300)
+      const badgeTimeout = setTimeout(() => setShowBadge(false), 2500)
       return () => {
         clearTimeout(timeout)
         clearTimeout(badgeTimeout)
@@ -72,84 +74,96 @@ export function BalanceCard({
   }, [balance])
 
   return (
-    <CardWithEffects className="border border-border-subtle bg-surface-raised shadow-md">
-      <CardContent className="p-6 md:p-7">
-        <div className="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <p className="mb-1 text-small font-medium text-text-muted">
-              Total balance
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        type: "spring",
+        ...springPresets.gentle,
+        delay: 0,
+      }}
+    >
+      <CardWithEffects className="relative overflow-hidden border-0 bg-gradient-to-br from-surface-raised via-surface-raised to-surface-base shadow-xl">
+        {/* Subtle gradient glow background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(29,78,216,0.08),transparent_50%)] pointer-events-none" />
+        
+        <CardContent className="relative p-8 md:p-10">
+          {/* Balance Display */}
+          <div className="mb-8">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-text-muted">
+              Total Balance
             </p>
             {isLoading ? (
-              <div className="mt-2 flex items-center gap-2">
-                <div className="h-9 w-32 animate-pulse rounded bg-surface-subtle" />
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-64 animate-pulse rounded-lg bg-surface-subtle" />
                 <Spinner size="sm" />
               </div>
             ) : (
-              <p
-                className={`mt-1 text-3xl font-semibold tracking-tight text-text-strong transition-standard ease-standard ${
-                  highlight ? "bg-primary-soft px-1 py-0.5 rounded" : ""
-                }`}
+              <motion.div
+                animate={highlight ? { scale: 1.02 } : { scale: 1 }}
+                transition={{ duration: 0.3 }}
               >
-                <NumberTicker
-                  value={displayBalance}
-                  duration={2000}
-                  decimals={2}
-                />
-              </p>
+                <p className="text-5xl md:text-6xl font-bold tracking-tight text-text-strong tabular-nums">
+                  <NumberTicker
+                    value={displayBalance}
+                    duration={1500}
+                    decimals={2}
+                  />
+                </p>
+              </motion.div>
             )}
           </div>
-          {!isLoading && (
-            <div className="rounded border border-border-subtle px-3 py-1 text-right">
-              <p className="text-tiny text-text-muted">Available</p>
-              <p className="text-small font-medium text-text-default">
-                {formatCurrency(displayBalance)}
-              </p>
-            </div>
+
+          {/* Balance updated badge */}
+          {showBadge && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mb-6 inline-flex items-center gap-2 rounded-full bg-success-soft/90 px-4 py-2 text-xs font-medium text-success backdrop-blur-sm border border-success/20"
+            >
+              <span className="h-2 w-2 rounded-full bg-success animate-pulse" aria-hidden="true" />
+              <span>Balance updated</span>
+            </motion.div>
           )}
-        </div>
 
-        {showBadge && (
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-success-soft px-3 py-1 text-tiny font-medium text-success">
-            <span className="h-1.5 w-1.5 rounded-full bg-success" aria-hidden="true" />
-            <span>Balance updated</span>
+          {/* Primary Actions */}
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <motion.div
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className="flex-1"
+            >
+              <Button
+                onClick={onAddMoney}
+                className="w-full h-12 gap-2.5 rounded-lg bg-gradient-to-r from-primary to-accent text-base font-semibold text-white shadow-md transition-all duration-200 hover:shadow-lg hover:from-primary/90 hover:to-accent/90 active:scale-[0.98] border-0"
+                size="lg"
+                aria-label="Add money to wallet"
+              >
+                <Plus className="h-5 w-5" />
+                Add Money
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className="flex-1"
+            >
+              <Button
+                onClick={onSendMoney}
+                variant="outline"
+                className="w-full h-12 gap-2.5 rounded-lg border-2 border-border-subtle bg-surface-raised text-base font-semibold text-text-strong transition-all duration-200 hover:bg-surface-base hover:border-primary/30 active:scale-[0.98]"
+                size="lg"
+                aria-label="Send money"
+              >
+                <Send className="h-5 w-5" />
+                Send Money
+              </Button>
+            </motion.div>
           </div>
-        )}
-
-        <div className="mb-6 rounded-lg border border-border-subtle bg-surface-base px-4 py-3">
-          <p className="text-tiny font-medium text-text-muted">7‑day overview</p>
-          <p className="mt-1 text-small text-text-default">
-            Activity breakdown is available in the Transactions section.
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-2 md:flex-row md:items-center">
-          <RippleButton
-            rippleColor="rgba(255, 255, 255, 0.3)"
-            onClick={onAddMoney}
-            className="flex-1 gap-2 rounded-md bg-primary text-text-on-primary transition-fast ease-standard hover:bg-primary/90"
-            size="lg"
-            aria-label="Add money to wallet"
-          >
-            <Plus className="h-5 w-5" />
-            Add Money
-          </RippleButton>
-          <RippleButton
-            rippleColor="rgba(15, 23, 42, 0.1)"
-            onClick={onSendMoney}
-            variant="outline"
-            className="flex-1 gap-2 rounded-md border border-border-subtle bg-surface-raised text-text-default transition-fast ease-standard hover:bg-surface-base"
-            size="lg"
-            aria-label="Send money"
-          >
-            <Send className="h-5 w-5" />
-            Send Money
-          </RippleButton>
-        </div>
-
-        <p className="mt-2 text-tiny text-text-muted">
-          Add money to top up your main wallet, or send funds to another account.
-        </p>
-      </CardContent>
-    </CardWithEffects>
+        </CardContent>
+      </CardWithEffects>
+    </motion.div>
   )
 }

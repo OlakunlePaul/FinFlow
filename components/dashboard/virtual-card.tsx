@@ -4,6 +4,8 @@ import { Card } from "@/components/ui/card"
 import { useSession } from "next-auth/react"
 import { useState } from "react"
 import { Eye, EyeOff, Wifi } from "lucide-react"
+import { motion } from "framer-motion"
+import { springPresets } from "@/lib/hooks/use-motion-config"
 
 export function VirtualCard() {
   const { data: session } = useSession()
@@ -17,7 +19,16 @@ export function VirtualCard() {
   const cvv = "123"
 
   return (
-    <div className="card-flip-container h-60 w-full md:h-52">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        type: "spring",
+        ...springPresets.gentle,
+        delay: 0.15,
+      }}
+      className="card-flip-container h-60 w-full md:h-52"
+    >
       <div
         className={`card-flip-inner ${isFlipped ? "flipped" : ""}`}
         onClick={() => setIsFlipped(!isFlipped)}
@@ -32,8 +43,10 @@ export function VirtualCard() {
         aria-label={isFlipped ? "Flip card to front" : "Flip card to back"}
       >
         {/* Front of Card */}
-        <Card className="card-flip-front h-full w-full overflow-hidden border border-border-subtle bg-primary text-text-on-primary shadow-md transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
-          <div className="relative flex h-full flex-col p-5 md:p-6">
+        <Card className="card-flip-front relative h-full w-full overflow-hidden border-0 bg-gradient-to-br from-primary via-primary to-accent text-text-on-primary shadow-xl transition-all duration-300 hover:shadow-2xl">
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
+          <div className="relative z-10 flex h-full flex-col p-6 md:p-7">
             {/* Top row: logo + chip + contactless */}
             <div className="mb-5 flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -141,8 +154,10 @@ export function VirtualCard() {
         </Card>
 
         {/* Back of Card */}
-        <Card className="card-flip-back h-full w-full overflow-hidden border border-border-subtle bg-surface-raised text-text-strong shadow-md">
-          <div className="relative flex h-full flex-col p-5 md:p-6">
+        <Card className="card-flip-back relative h-full w-full overflow-hidden border border-border-subtle bg-surface-raised text-text-strong shadow-xl">
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-surface-base/50 via-transparent to-transparent pointer-events-none" />
+          <div className="relative z-10 flex h-full flex-col p-5 md:p-6">
             {/* Magnetic stripe */}
             <div className="mb-5 h-8 w-full rounded-sm bg-neutral-800" />
 
@@ -180,7 +195,7 @@ export function VirtualCard() {
           </div>
         </Card>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

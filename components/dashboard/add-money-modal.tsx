@@ -131,7 +131,7 @@ export function AddMoneyModal({
               />
               <select
                 {...register("currency")}
-                className="absolute right-3 top-1/2 h-8 -translate-y-1/2 rounded-md border border-gray-lighter bg-gray-lightest px-2 text-tiny font-medium text-dark-blue focus:outline-none"
+                className="absolute right-3 top-1/2 h-8 -translate-y-1/2 rounded-lg border border-border-subtle bg-surface-raised px-2 text-xs font-medium text-text-strong shadow-sm transition-all duration-200 hover:border-border-strong hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               >
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
