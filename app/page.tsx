@@ -64,7 +64,7 @@ export default function HomePage() {
       </header>
 
       {/* Main content */}
-      <main>
+      <main className="flex flex-1 flex-col">
       {/* Hero Section */}
       <section className="relative flex flex-1 items-center bg-primary px-4 py-12 text-text-on-primary lg:py-20 overflow-hidden">
         <FloatingOrb size={800} blur={120} opacity={0.2} />

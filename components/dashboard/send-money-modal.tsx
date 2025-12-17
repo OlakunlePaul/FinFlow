@@ -95,18 +95,19 @@ export function SendMoneyModal({
   }
 
   const executeTransfer = async (data: TransferForm) => {
-    if (data.amount > balance) {
-      const error = new Error("Insufficient Balance")
-      toast({
-        title: "Insufficient Balance",
-        description: "You don't have enough funds for this transfer",
-        variant: "destructive",
-      })
-      throw error
-    }
-
     setIsSubmitting(true)
     try {
+      // Check balance before making the API call
+      if (data.amount > balance) {
+        const error = new Error("Insufficient Balance")
+        toast({
+          title: "Insufficient Balance",
+          description: "You don't have enough funds for this transfer",
+          variant: "destructive",
+        })
+        throw error
+      }
+
       const res = await fetch("/api/transfer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
