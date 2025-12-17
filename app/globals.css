@@ -217,7 +217,7 @@
   }
 
   .animate-meteor-effect {
-    animation: meteor-effect linear infinite;
+    animation: meteor-effect 1s linear infinite;
   }
 
   /* Pulse animation for icons */
