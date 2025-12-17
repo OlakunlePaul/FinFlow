@@ -1,9 +1,7 @@
 "use client"
 
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
-import { useEffect } from "react"
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
-import { springPresets } from "@/lib/hooks/use-motion-config"
 
 interface AnimatedProgressProps {
   value: number
@@ -19,18 +17,6 @@ export function AnimatedProgress({
   barClassName,
 }: AnimatedProgressProps) {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
-  
-  // Use motion value and spring for smooth animation
-  const motionValue = useMotionValue(0)
-  const springValue = useSpring(motionValue, {
-    ...springPresets.gentle,
-    duration: 0.5, // 500ms as requested
-  })
-  const width = useTransform(springValue, (val) => `${val}%`)
-
-  useEffect(() => {
-    motionValue.set(percentage)
-  }, [percentage, motionValue])
 
   return (
     <div
@@ -42,7 +28,13 @@ export function AnimatedProgress({
     >
       <motion.div
         className={cn("h-full rounded-full bg-primary", barClassName)}
-        style={{ width }}
+        initial={{ width: "0%" }}
+        animate={{ width: `${percentage}%` }}
+        transition={{
+          type: "tween",
+          duration: 0.5,
+          ease: [0.2, 0.0, 0.2, 1.0], // Spring-like easing curve
+        }}
       />
     </div>
   )
