@@ -46,15 +46,20 @@ export function SendMoneyModal({
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [successData, setSuccessData] = useState<{ amount: number; recipient: string } | null>(null)
   const successModalTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const successModalCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isShowingSuccessModalRef = useRef(false) // Track if we're in the process of showing success modal
 
   // Reset success state when the main modal closes
   useEffect(() => {
     if (!open) {
-      // Always clear timeout to prevent memory leaks and stale updates
+      // Always clear timeouts to prevent memory leaks and stale updates
       if (successModalTimeoutRef.current) {
         clearTimeout(successModalTimeoutRef.current)
         successModalTimeoutRef.current = null
+      }
+      if (successModalCloseTimeoutRef.current) {
+        clearTimeout(successModalCloseTimeoutRef.current)
+        successModalCloseTimeoutRef.current = null
       }
       // Only reset success state if we're not showing the success modal
       if (!isShowingSuccessModalRef.current) {
@@ -66,12 +71,16 @@ export function SendMoneyModal({
     }
   }, [open])
 
-  // Cleanup timeout on unmount
+  // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
       if (successModalTimeoutRef.current) {
         clearTimeout(successModalTimeoutRef.current)
         successModalTimeoutRef.current = null
+      }
+      if (successModalCloseTimeoutRef.current) {
+        clearTimeout(successModalCloseTimeoutRef.current)
+        successModalCloseTimeoutRef.current = null
       }
       // Reset flag on unmount
       isShowingSuccessModalRef.current = false
@@ -332,9 +341,18 @@ export function SendMoneyModal({
           onOpenChange={(isOpen) => {
             setShowSuccessModal(isOpen)
             // Reset success data and flag when the success modal closes
+            // Delay unmounting to allow Dialog close animation to complete (300ms)
             if (!isOpen) {
-              setSuccessData(null)
-              isShowingSuccessModalRef.current = false
+              // Clear any existing close timeout
+              if (successModalCloseTimeoutRef.current) {
+                clearTimeout(successModalCloseTimeoutRef.current)
+              }
+              // Wait for Dialog animation to complete before unmounting
+              successModalCloseTimeoutRef.current = setTimeout(() => {
+                setSuccessData(null)
+                isShowingSuccessModalRef.current = false
+                successModalCloseTimeoutRef.current = null
+              }, 300) // Match Dialog's duration-300 animation
             }
           }}
           title="Transaction Successful!"
