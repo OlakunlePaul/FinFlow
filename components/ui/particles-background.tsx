@@ -118,7 +118,7 @@ export function ParticlesBackground({
         circles.current.push(circle)
       }
     }
-  }, [])
+  }, [dpr])
 
   const resizeCanvas = useCallback(() => {
     if (canvasContainerRef.current && canvasRef.current && context.current) {
@@ -131,7 +131,7 @@ export function ParticlesBackground({
       canvasRef.current.style.height = `${canvasSize.current.h}px`
       context.current.scale(dpr, dpr)
     }
-  }, [])
+  }, [dpr])
 
   const drawParticles = useCallback(() => {
     clearContext()
