@@ -29,7 +29,7 @@ export function AnimatedText({
 
   // Always render the same structure to prevent hydration mismatches
   // Keep initial prop consistent to avoid animation restart during hydration
-  // Control animation behavior through animate and transition props instead
+  // Control animation behavior through transition prop (duration: 0 for reduced motion)
   const shouldAnimate = !isMounted || !prefersReducedMotion
 
   return (
@@ -39,8 +39,8 @@ export function AnimatedText({
           key={`${word}-${index}`}
           // Always use the same initial value to prevent animation restart during hydration
           initial={{ opacity: 0, y: initialY }}
-          // Control animation through animate prop: if reduced motion, animate to final state immediately
-          animate={shouldAnimate ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+          // Always animate to final state - transition prop controls whether it's instant or animated
+          animate={{ opacity: 1, y: 0 }}
           transition={
             shouldAnimate
               ? {
