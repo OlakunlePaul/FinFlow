@@ -230,7 +230,7 @@ export function ParticlesBackground({
       ref={canvasContainerRef}
       aria-hidden="true"
     >
-      <canvas ref={canvasRef} className="size-full" />
+      <canvas ref={canvasRef} className="size-full" tabIndex={-1} />
     </div>
   )
 }

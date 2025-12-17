@@ -57,6 +57,8 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* Main content */}
+      <main>
       {/* Hero Section */}
       <section className="relative flex flex-1 items-center bg-primary px-4 py-12 text-text-on-primary lg:py-20 overflow-hidden">
         <ParticlesBackground
@@ -275,6 +277,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* Footer */}
       <footer className="bg-primary py-10 text-text-on-primary">
