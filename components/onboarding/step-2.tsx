@@ -122,7 +122,7 @@ export function OnboardingStep2() {
         <Button type="button" variant="outline" onClick={goBack} className="flex-1">
           Back
         </Button>
-        <Button type="submit" className="flex-1" disabled={isSubmitting}>
+        <Button type="submit" className="flex-1 text-white" disabled={isSubmitting}>
           {isSubmitting ? "Processing..." : "Continue"}
         </Button>
       </div>

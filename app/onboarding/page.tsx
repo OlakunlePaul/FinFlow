@@ -93,7 +93,7 @@ export default function OnboardingPage() {
           </p>
 
           {/* Step content */}
-          <div className="min-h-[420px] relative overflow-hidden">
+          <div className="min-h-[420px] relative overflow-visible">
             <AnimatePresence mode="wait">
               {currentStep === 1 && (
                 <motion.div

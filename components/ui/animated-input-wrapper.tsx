@@ -61,7 +61,7 @@ export function AnimatedInputWrapper({
   })
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative overflow-visible", className)}>
       {label && (
         <motion.label
           htmlFor={inputId}
@@ -73,18 +73,24 @@ export function AnimatedInputWrapper({
             type: "spring",
             ...springPresets.gentle,
           }}
+          style={{
+            transformOrigin: "left center",
+          }}
         >
           {label}
         </motion.label>
       )}
       <motion.div
-        className="relative"
+        className="relative overflow-visible"
         animate={{
           scale: isFocused ? 1.01 : 1,
         }}
         transition={{
           type: "spring",
           ...springPresets.gentle,
+        }}
+        style={{
+          transformOrigin: "center",
         }}
       >
         {childrenWithHandlers}

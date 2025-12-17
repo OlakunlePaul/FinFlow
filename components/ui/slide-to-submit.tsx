@@ -191,6 +191,9 @@ export function SlideToSubmit({
         {/* Draggable knob */}
         <motion.div
           ref={knobRef}
+          drag="x"
+          dragConstraints={{ left: 0, right: maxX }}
+          dragElastic={0}
           onPanStart={handlePanStart}
           onPan={handlePan}
           onPanEnd={handlePanEnd}

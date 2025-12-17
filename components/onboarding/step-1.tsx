@@ -97,7 +97,7 @@ export function OnboardingStep1() {
 
       <Button
         type="submit"
-        className="w-full bg-primary text-text-on-primary hover:bg-primary/90"
+        className="w-full text-white"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Processing..." : "Continue"}

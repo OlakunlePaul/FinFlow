@@ -97,7 +97,7 @@ export function OnboardingStep4() {
         <Button type="button" variant="outline" onClick={goBack} className="flex-1">
           Back
         </Button>
-        <Button type="button" onClick={handleSubmit} className="flex-1">
+        <Button type="button" onClick={handleSubmit} className="flex-1 text-white">
           Submit & Create Account
         </Button>
       </div>
