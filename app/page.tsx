@@ -4,6 +4,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Check, Code, Shield, Zap, Globe, Plus, Send, Download } from "lucide-react"
+import { HeroSection } from "@/components/hero/hero-section"
 
 const easing = [0.4, 0, 0.2, 1] as const
 
@@ -18,7 +19,7 @@ const jsonPayload = `{` + `"amount": 1000, "currency": "USD"` + `}`
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="relative flex min-h-screen flex-col bg-white overflow-hidden">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border-subtle bg-white/80 backdrop-blur-sm">
         <div className="container flex items-center justify-between px-6 py-4">
@@ -43,71 +44,8 @@ export default function HomePage() {
       </header>
 
       <main className="flex flex-1 flex-col">
-      {/* Hero Section */}
-        <section className="relative overflow-hidden bg-white px-6 py-20 lg:py-32">
-          <div className="container mx-auto max-w-6xl">
-            <motion.div
-              {...fadeInUp}
-              className="mx-auto max-w-3xl text-center"
-            >
-              <h1 className="text-4xl font-bold tracking-tight text-text-strong sm:text-5xl lg:text-6xl">
-                Production-ready wallet infrastructure
-            </h1>
-              <p className="mt-6 text-lg leading-relaxed text-text-muted sm:text-xl">
-                Build secure, scalable financial products with enterprise-grade reliability. 
-                Trusted by teams shipping real money features.
-              </p>
-              
-              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Link href="/signup">
-                  <Button size="lg" className="bg-primary text-text-on-primary hover:bg-primary/90">
-                  Get Started
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link href="/auth/signin">
-                  <Button size="lg" variant="outline" className="border-border-subtle text-text-strong hover:bg-surface-base">
-                    View Dashboard
-                  </Button>
-              </Link>
-            </div>
-
-              <p className="mt-6 text-sm text-text-muted">
-                <Shield className="mr-1.5 inline h-4 w-4" />
-                SOC 2 compliant • 256-bit encryption • 99.9% uptime SLA
-              </p>
-            </motion.div>
-
-            {/* Hero Visual - Subtle Virtual Card */}
-            <motion.div
-              {...fadeInUp}
-              transition={{ delay: 0.2, duration: 0.6, ease: easing }}
-              className="mt-16 flex justify-center"
-            >
-              <div className="relative w-full max-w-2xl">
-                <div className="relative rounded-2xl border border-border-subtle bg-gradient-to-br from-surface-base to-white p-8 shadow-lg">
-                  {/* Subtle glassy card mock */}
-                  <div className="relative mx-auto max-w-sm">
-                    <div className="rounded-xl border border-border-subtle/50 bg-white/60 p-6 backdrop-blur-sm shadow-md">
-                      <div className="mb-4 flex items-center justify-between">
-                        <div className="h-8 w-12 rounded bg-gradient-to-br from-primary/20 to-accent/20" />
-                        <div className="h-6 w-6 rounded-full border-2 border-border-subtle" />
-                  </div>
-                      <div className="mt-6 space-y-2">
-                        <div className="h-4 w-32 rounded bg-text-muted/20" />
-                        <div className="h-4 w-24 rounded bg-text-muted/10" />
-                </div>
-                      <div className="mt-6 flex items-center justify-between text-sm text-text-muted">
-                        <span>•••• 1234</span>
-                        <span>12/25</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-            </motion.div>
-        </div>
-      </section>
+        {/* Hero Section */}
+        <HeroSection />
 
         {/* Dashboard Preview Section */}
         <section className="bg-slate-50 px-6 py-20 lg:py-32">
