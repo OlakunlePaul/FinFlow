@@ -70,7 +70,7 @@ export function ParticlesBackground({
     }
   }
 
-  const circleParams = (): Circle => {
+  const circleParams = useCallback((): Circle => {
     const x = Math.floor(Math.random() * canvasSize.current.w)
     const y = Math.floor(Math.random() * canvasSize.current.h)
     const translateX = 0
@@ -93,9 +93,9 @@ export function ParticlesBackground({
       dy,
       magnetism,
     }
-  }
+  }, [])
 
-  const drawCircle = (circle: Circle, update = false) => {
+  const drawCircle = useCallback((circle: Circle, update = false) => {
     if (context.current) {
       const { x, y, translateX, translateY, size, alpha } = circle
       context.current.translate(translateX, translateY)
@@ -118,9 +118,9 @@ export function ParticlesBackground({
         circles.current.push(circle)
       }
     }
-  }
+  }, [])
 
-  const resizeCanvas = () => {
+  const resizeCanvas = useCallback(() => {
     if (canvasContainerRef.current && canvasRef.current && context.current) {
       circles.current.length = 0
       canvasSize.current.w = canvasContainerRef.current.offsetWidth
@@ -131,7 +131,7 @@ export function ParticlesBackground({
       canvasRef.current.style.height = `${canvasSize.current.h}px`
       context.current.scale(dpr, dpr)
     }
-  }
+  }, [])
 
   const drawParticles = useCallback(() => {
     clearContext()
@@ -140,12 +140,12 @@ export function ParticlesBackground({
       const circle = circleParams()
       drawCircle(circle)
     }
-  }, [])
+  }, [circleParams, drawCircle])
 
   const initCanvas = useCallback(() => {
     resizeCanvas()
     drawParticles()
-  }, [drawParticles])
+  }, [resizeCanvas, drawParticles])
 
   const remapValue = (
     value: number,
@@ -159,7 +159,7 @@ export function ParticlesBackground({
     return remapped > 0 ? remapped : 0
   }
 
-  const animate = () => {
+  const animate = useCallback(() => {
     clearContext()
     circles.current.forEach((circle: Circle, i: number) => {
       const edge = [
@@ -205,7 +205,7 @@ export function ParticlesBackground({
       }
     })
     animationFrameRef.current = window.requestAnimationFrame(animate)
-  }
+  }, [circleParams, drawCircle])
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -222,7 +222,7 @@ export function ParticlesBackground({
         animationFrameRef.current = null
       }
     }
-  }, [initCanvas])
+  }, [initCanvas, animate])
 
   useEffect(() => {
     initCanvas()
