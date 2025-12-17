@@ -44,8 +44,11 @@ export function SuccessModal({
       // Reset and animate checkmark
       setCheckmarkPath(0)
       
+      let animationFrameId: number | null = null
+      let timeoutId: NodeJS.Timeout | null = null
+      
       // Small delay to ensure modal is visible
-      const timeout = setTimeout(() => {
+      timeoutId = setTimeout(() => {
         const duration = 800 // ms
         const startTime = performance.now()
 
@@ -58,14 +61,23 @@ export function SuccessModal({
           setCheckmarkPath(easeOut * pathLength)
 
           if (progress < 1) {
-            requestAnimationFrame(animate)
+            animationFrameId = requestAnimationFrame(animate)
+          } else {
+            animationFrameId = null
           }
         }
 
-        requestAnimationFrame(animate)
+        animationFrameId = requestAnimationFrame(animate)
       }, 100)
 
-      return () => clearTimeout(timeout)
+      return () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId)
+        }
+        if (animationFrameId !== null) {
+          cancelAnimationFrame(animationFrameId)
+        }
+      }
     } else {
       setCheckmarkPath(0)
     }

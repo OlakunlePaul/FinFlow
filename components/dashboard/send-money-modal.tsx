@@ -46,17 +46,21 @@ export function SendMoneyModal({
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [successData, setSuccessData] = useState<{ amount: number; recipient: string } | null>(null)
   const successModalTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const isShowingSuccessModalRef = useRef(false) // Track if we're in the process of showing success modal
 
   // Reset success state when the main modal closes
   useEffect(() => {
     if (!open) {
-      // Clear any pending timeout when modal closes
-      if (successModalTimeoutRef.current) {
+      // Only clear timeout if we're not in the process of showing a success modal
+      if (!isShowingSuccessModalRef.current && successModalTimeoutRef.current) {
         clearTimeout(successModalTimeoutRef.current)
         successModalTimeoutRef.current = null
       }
-      setShowSuccessModal(false)
-      setSuccessData(null)
+      // Only reset success state if we're not showing the success modal
+      if (!isShowingSuccessModalRef.current) {
+        setShowSuccessModal(false)
+        setSuccessData(null)
+      }
       setStep("form")
       setReviewData(null)
     }
@@ -69,6 +73,8 @@ export function SendMoneyModal({
         clearTimeout(successModalTimeoutRef.current)
         successModalTimeoutRef.current = null
       }
+      // Reset flag on unmount
+      isShowingSuccessModalRef.current = false
     }
   }, [])
 
@@ -128,6 +134,9 @@ export function SendMoneyModal({
       queryClient.invalidateQueries({ queryKey: ["transactions"] })
       queryClient.invalidateQueries({ queryKey: ["balance"] })
 
+      // Set flag to indicate we're about to show success modal
+      isShowingSuccessModalRef.current = true
+
       // Close the main modal first, then show success modal
       reset()
       onOpenChange(false)
@@ -144,8 +153,17 @@ export function SendMoneyModal({
         setSuccessData({ amount: data.amount, recipient: data.recipient })
         setShowSuccessModal(true)
         successModalTimeoutRef.current = null
+        // Reset flag after timeout fires
+        isShowingSuccessModalRef.current = false
       }, 100)
     } catch (error: any) {
+      // Reset flag on error
+      isShowingSuccessModalRef.current = false
+      // Clear timeout if it was set
+      if (successModalTimeoutRef.current) {
+        clearTimeout(successModalTimeoutRef.current)
+        successModalTimeoutRef.current = null
+      }
       toast({
         title: "Error",
         description: error.message || "Failed to send money",
@@ -310,9 +328,10 @@ export function SendMoneyModal({
           open={showSuccessModal}
           onOpenChange={(isOpen) => {
             setShowSuccessModal(isOpen)
-            // Reset success data when the success modal closes
+            // Reset success data and flag when the success modal closes
             if (!isOpen) {
               setSuccessData(null)
+              isShowingSuccessModalRef.current = false
             }
           }}
           title="Transaction Successful!"
