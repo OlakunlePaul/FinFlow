@@ -251,7 +251,7 @@ export function WalletDashboard() {
               type="button"
               className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface-raised px-3 py-1 text-tiny font-medium text-text-default hover:bg-surface-base focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               aria-label="Select account"
-              {...(accountMenuOpen && { "aria-expanded": true })}
+              aria-expanded={accountMenuOpen}
               onClick={() => setAccountMenuOpen((open) => !open)}
             >
               <span>Primary USD wallet</span>

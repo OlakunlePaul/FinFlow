@@ -24,6 +24,20 @@ export function AnimatedInputWrapper({
   const handleFocus = () => setIsFocused(true)
   const handleBlur = () => setIsFocused(false)
 
+  // Extract input id from children for label htmlFor attribute
+  const inputId = React.useMemo(() => {
+    let id: string | undefined
+    React.Children.forEach(children, (child) => {
+      if (React.isValidElement(child)) {
+        const childProps = child.props as { id?: string }
+        if (childProps.id) {
+          id = childProps.id
+        }
+      }
+    })
+    return id
+  }, [children])
+
   // Clone children to add focus/blur handlers
   const childrenWithHandlers = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
@@ -50,6 +64,7 @@ export function AnimatedInputWrapper({
     <div className={cn("relative", className)}>
       {label && (
         <motion.label
+          htmlFor={inputId}
           className={cn("mb-2 block text-sm font-medium", labelClassName)}
           animate={{
             scale: isFocused ? 1.02 : 1,
