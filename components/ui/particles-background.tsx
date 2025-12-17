@@ -28,6 +28,7 @@ export function ParticlesBackground({
   const circles = useRef<any[]>([])
   const mousePosition = useRef({ x: 0, y: 0 })
   const canvasSize = useRef({ w: 0, h: 0 })
+  const animationFrameRef = useRef<number | null>(null)
   const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1
 
   useEffect(() => {
@@ -40,6 +41,10 @@ export function ParticlesBackground({
 
     return () => {
       window.removeEventListener("resize", initCanvas)
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current)
+        animationFrameRef.current = null
+      }
     }
   }, [color, quantity, size])
 
@@ -196,7 +201,7 @@ export function ParticlesBackground({
         drawCircle(newCircle)
       }
     })
-    window.requestAnimationFrame(animate)
+    animationFrameRef.current = window.requestAnimationFrame(animate)
   }
 
   return (

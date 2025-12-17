@@ -25,10 +25,17 @@ export function CountingNumber({
   const startValueRef = useRef(value)
   const startTimeRef = useRef<number | null>(null)
   const animationFrameRef = useRef<number | null>(null)
+  const displayValueRef = useRef(value)
+
+  // Keep displayValueRef in sync with displayValue
+  useEffect(() => {
+    displayValueRef.current = displayValue
+  }, [displayValue])
 
   useEffect(() => {
     if (startValueRef.current === value) {
       setDisplayValue(value)
+      displayValueRef.current = value
       return
     }
 
@@ -50,6 +57,7 @@ export function CountingNumber({
       const currentValue = startValue + (endValue - startValue) * easeOut
 
       setDisplayValue(currentValue)
+      displayValueRef.current = currentValue
 
       if (progress < 1) {
         animationFrameRef.current = requestAnimationFrame(animate)
@@ -65,7 +73,12 @@ export function CountingNumber({
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
+        animationFrameRef.current = null
       }
+      // Update startValueRef to current displayValue when animation is cancelled
+      // to prevent visual jumps when value changes before animation completes
+      startValueRef.current = displayValueRef.current
+      startTimeRef.current = null
     }
   }, [value, duration])
 
