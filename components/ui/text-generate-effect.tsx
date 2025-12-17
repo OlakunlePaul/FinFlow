@@ -23,15 +23,26 @@ export function TextGenerateEffect({
   const [isComplete, setIsComplete] = useState(false)
 
   useEffect(() => {
+    // Reset when words change
+    setDisplayedText("")
+    setCurrentIndex(0)
+    setIsComplete(false)
+  }, [words])
+
+  useEffect(() => {
     if (currentIndex >= words.length) {
       setIsComplete(true)
       return
     }
 
+    // Use constant delay between characters: first character after initial delay,
+    // subsequent characters after duration ms each
+    const timeoutDelay = currentIndex === 0 ? delay : duration
+
     const timeout = setTimeout(() => {
       setDisplayedText(words.slice(0, currentIndex + 1))
       setCurrentIndex(currentIndex + 1)
-    }, delay + duration * currentIndex)
+    }, timeoutDelay)
 
     return () => clearTimeout(timeout)
   }, [currentIndex, words, duration, delay])

@@ -35,12 +35,16 @@ export function ParticlesBackground({
   const quantityRef = useRef(quantity)
   const sizeRef = useRef(size)
   const colorRef = useRef(color)
+  const staticityRef = useRef(staticity)
+  const easeRef = useRef(ease)
   
   useEffect(() => {
     quantityRef.current = quantity
     sizeRef.current = size
     colorRef.current = color
-  }, [quantity, size, color])
+    staticityRef.current = staticity
+    easeRef.current = ease
+  }, [quantity, size, color, staticity, ease])
 
   type Circle = {
     x: number
@@ -143,27 +147,6 @@ export function ParticlesBackground({
     drawParticles()
   }, [drawParticles])
 
-  useEffect(() => {
-    if (canvasRef.current) {
-      context.current = canvasRef.current.getContext("2d")
-    }
-    initCanvas()
-    animate()
-    window.addEventListener("resize", initCanvas)
-
-    return () => {
-      window.removeEventListener("resize", initCanvas)
-      if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current)
-        animationFrameRef.current = null
-      }
-    }
-  }, [initCanvas])
-
-  useEffect(() => {
-    initCanvas()
-  }, [refresh, initCanvas])
-
   const remapValue = (
     value: number,
     start1: number,
@@ -200,13 +183,13 @@ export function ParticlesBackground({
       circle.x += circle.dx
       circle.y += circle.dy
       circle.translateX +=
-        (mousePosition.current.x / (staticity / circle.magnetism) -
+        (mousePosition.current.x / (staticityRef.current / circle.magnetism) -
           circle.translateX) /
-        ease
+        easeRef.current
       circle.translateY +=
-        (mousePosition.current.y / (staticity / circle.magnetism) -
+        (mousePosition.current.y / (staticityRef.current / circle.magnetism) -
           circle.translateY) /
-        ease
+        easeRef.current
 
       drawCircle(circle, true)
 
@@ -224,13 +207,34 @@ export function ParticlesBackground({
     animationFrameRef.current = window.requestAnimationFrame(animate)
   }
 
+  useEffect(() => {
+    if (canvasRef.current) {
+      context.current = canvasRef.current.getContext("2d")
+    }
+    initCanvas()
+    animate()
+    window.addEventListener("resize", initCanvas)
+
+    return () => {
+      window.removeEventListener("resize", initCanvas)
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current)
+        animationFrameRef.current = null
+      }
+    }
+  }, [initCanvas])
+
+  useEffect(() => {
+    initCanvas()
+  }, [refresh, initCanvas])
+
   return (
     <div
       className={cn("pointer-events-none absolute inset-0", className)}
       ref={canvasContainerRef}
       aria-hidden="true"
     >
-      <canvas ref={canvasRef} className="size-full" />
+      <canvas ref={canvasRef} className="size-full" tabIndex={-1} />
     </div>
   )
 }
