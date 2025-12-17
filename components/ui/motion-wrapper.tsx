@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, MotionProps, Variants } from "framer-motion"
+import { motion, MotionProps, TargetAndTransition } from "framer-motion"
 import { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 import { springPresets, useReducedMotion } from "@/lib/hooks/use-motion-config"
@@ -13,7 +13,11 @@ interface MotionWrapperProps extends Omit<MotionProps, "initial" | "animate" | "
 }
 
 // Animation variants mapped to presets
-const animationVariants: Record<string, Variants> = {
+const animationVariants: Record<string, {
+  initial: TargetAndTransition
+  animate: TargetAndTransition
+  exit: TargetAndTransition
+}> = {
   fade: {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
