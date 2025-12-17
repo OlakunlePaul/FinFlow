@@ -13,10 +13,12 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { SlideToSubmit } from "@/components/ui/slide-to-submit"
+import { SuccessModal } from "@/components/ui/success-modal"
 import { useWalletStore } from "@/lib/store/wallet-store"
 import { useQueryClient } from "@tanstack/react-query"
 import { useToast } from "@/components/ui/use-toast"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { sanitizeInput } from "@/lib/utils"
 import { AlertTriangle } from "lucide-react"
 
@@ -41,6 +43,49 @@ export function SendMoneyModal({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [step, setStep] = useState<"form" | "review">("form")
   const [reviewData, setReviewData] = useState<TransferForm | null>(null)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [successData, setSuccessData] = useState<{ amount: number; recipient: string } | null>(null)
+  const successModalTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const successModalCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const isShowingSuccessModalRef = useRef(false) // Track if we're in the process of showing success modal
+
+  // Reset success state when the main modal closes
+  useEffect(() => {
+    if (!open) {
+      // Always clear timeouts to prevent memory leaks and stale updates
+      if (successModalTimeoutRef.current) {
+        clearTimeout(successModalTimeoutRef.current)
+        successModalTimeoutRef.current = null
+      }
+      if (successModalCloseTimeoutRef.current) {
+        clearTimeout(successModalCloseTimeoutRef.current)
+        successModalCloseTimeoutRef.current = null
+      }
+      // Only reset success state if we're not showing the success modal
+      if (!isShowingSuccessModalRef.current) {
+        setShowSuccessModal(false)
+        setSuccessData(null)
+      }
+      setStep("form")
+      setReviewData(null)
+    }
+  }, [open])
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (successModalTimeoutRef.current) {
+        clearTimeout(successModalTimeoutRef.current)
+        successModalTimeoutRef.current = null
+      }
+      if (successModalCloseTimeoutRef.current) {
+        clearTimeout(successModalCloseTimeoutRef.current)
+        successModalCloseTimeoutRef.current = null
+      }
+      // Reset flag on unmount
+      isShowingSuccessModalRef.current = false
+    }
+  }, [])
 
   const {
     register,
@@ -65,17 +110,19 @@ export function SendMoneyModal({
   }
 
   const executeTransfer = async (data: TransferForm) => {
-    if (data.amount > balance) {
-      toast({
-        title: "Insufficient Balance",
-        description: "You don't have enough funds for this transfer",
-        variant: "destructive",
-      })
-      return
-    }
-
     setIsSubmitting(true)
     try {
+      // Check balance before making the API call
+      if (data.amount > balance) {
+        const error = new Error("Insufficient Balance")
+        toast({
+          title: "Insufficient Balance",
+          description: "You don't have enough funds for this transfer",
+          variant: "destructive",
+        })
+        throw error
+      }
+
       const res = await fetch("/api/transfer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -96,29 +143,54 @@ export function SendMoneyModal({
       queryClient.invalidateQueries({ queryKey: ["transactions"] })
       queryClient.invalidateQueries({ queryKey: ["balance"] })
 
-      toast({
-        title: "Success!",
-        description: `$${data.amount.toFixed(2)} sent to ${data.recipient}`,
-        variant: "success",
-      })
+      // Set flag to indicate we're about to show success modal
+      isShowingSuccessModalRef.current = true
 
+      // Close the main modal first, then show success modal
       reset()
       onOpenChange(false)
       setStep("form")
       setReviewData(null)
+
+      // Clear any existing timeout before setting a new one
+      if (successModalTimeoutRef.current) {
+        clearTimeout(successModalTimeoutRef.current)
+      }
+
+      // Show success modal after a brief delay to ensure parent modal is closed
+      successModalTimeoutRef.current = setTimeout(() => {
+        setSuccessData({ amount: data.amount, recipient: data.recipient })
+        setShowSuccessModal(true)
+        successModalTimeoutRef.current = null
+        // Reset flag after timeout fires
+        isShowingSuccessModalRef.current = false
+      }, 100)
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to send money",
-        variant: "destructive",
-      })
+      // Reset flag on error
+      isShowingSuccessModalRef.current = false
+      // Clear timeout if it was set
+      if (successModalTimeoutRef.current) {
+        clearTimeout(successModalTimeoutRef.current)
+        successModalTimeoutRef.current = null
+      }
+      // Skip showing toast for balance validation errors since we already showed it
+      if (error.message !== "Insufficient Balance") {
+        toast({
+          title: "Error",
+          description: error.message || "Failed to send money",
+          variant: "destructive",
+        })
+      }
+      // Re-throw error so SlideToSubmit can catch it and reset
+      throw error
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-h3 text-dark-blue">Send Money</DialogTitle>
@@ -250,25 +322,45 @@ export function SendMoneyModal({
               >
                 Back
               </Button>
-              <Button
-                type="button"
+              <SlideToSubmit
+                onSubmit={() => reviewData && executeTransfer(reviewData)}
                 disabled={isSubmitting}
-                onClick={() => reviewData && executeTransfer(reviewData)}
-                className="w-full rounded-lg bg-gradient-to-r from-dark-blue to-dark-blue-light text-white sm:w-auto"
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                    Sending...
-                  </>
-                ) : (
-                  "Send Money"
-                )}
-              </Button>
+                label="Slide to send money"
+                completedLabel="Sending..."
+              />
             </DialogFooter>
           </div>
         )}
       </DialogContent>
-    </Dialog>
+      </Dialog>
+
+      {/* Success Modal - rendered outside Dialog to persist after parent closes */}
+      {successData && (
+        <SuccessModal
+          open={showSuccessModal}
+          onOpenChange={(isOpen) => {
+            setShowSuccessModal(isOpen)
+            // Reset success data and flag when the success modal closes
+            // Delay unmounting to allow Dialog close animation to complete (300ms)
+            if (!isOpen) {
+              // Clear any existing close timeout
+              if (successModalCloseTimeoutRef.current) {
+                clearTimeout(successModalCloseTimeoutRef.current)
+              }
+              // Wait for Dialog animation to complete before unmounting
+              successModalCloseTimeoutRef.current = setTimeout(() => {
+                setSuccessData(null)
+                isShowingSuccessModalRef.current = false
+                successModalCloseTimeoutRef.current = null
+              }, 300) // Match Dialog's duration-300 animation
+            }
+          }}
+          title="Transaction Successful!"
+          description="Your money has been sent successfully."
+          amount={successData.amount}
+          recipient={successData.recipient}
+        />
+      )}
+    </>
   )
 }

@@ -1,55 +1,40 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { RippleButton } from "@/components/ui/ripple-button"
-import { TextGenerateEffect } from "@/components/ui/text-generate-effect"
-import { ParticlesBackground } from "@/components/ui/particles-background"
-import { GradientText } from "@/components/ui/gradient-text"
-import { ShimmeringText } from "@/components/ui/shimmering-text"
-import { ArrowRight, Shield, Globe, CreditCard, Lock } from "lucide-react"
+"use client"
 
-const features = [
-  {
-    icon: Shield,
-    title: "Global Accounts",
-    description: "Open USD, EUR, GBP accounts instantly.",
-  },
-  {
-    icon: CreditCard,
-    title: "Virtual Cards",
-    description: "Create unlimited virtual cards for online purchases.",
-  },
-  {
-    icon: Globe,
-    title: "Crypto Exchange",
-    description: "Convert between 50+ currencies and cryptocurrencies.",
-  },
-  {
-    icon: Lock,
-    title: "Fast Transfers",
-    description: "Send money worldwide in minutes, not days.",
-  },
-]
+import Link from "next/link"
+import { motion } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { ArrowRight, Check, Code, Shield, Zap, Globe, Plus, Send, Download } from "lucide-react"
+
+const easing = [0.4, 0, 0.2, 1] as const
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: easing },
+}
+
+// JSON payload for code example
+const jsonPayload = `{` + `"amount": 1000, "currency": "USD"` + `}`
 
 export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-gray-lighter bg-white/90 backdrop-blur-md">
-        <div className="container flex flex-wrap items-center justify-between gap-3 px-4 py-4 lg:flex-nowrap lg:px-6">
+      <header className="sticky top-0 z-50 border-b border-border-subtle bg-white/80 backdrop-blur-sm">
+        <div className="container flex items-center justify-between px-6 py-4">
           <div className="flex items-center">
-            <span className="text-lg font-semibold lg:text-xl">FinFlow</span>
+            <span className="text-lg font-semibold tracking-tight text-text-strong">
+              FinFlow
+            </span>
           </div>
-          <nav className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <Link href="/login">
-              <Button
-                variant="ghost"
-                className="text-text-default hover:bg-surface-base hover:text-text-strong"
-              >
+          <nav className="flex items-center gap-4">
+            <Link href="/auth/signin">
+              <Button variant="ghost" size="sm" className="text-text-muted hover:text-text-strong">
                 Sign In
               </Button>
             </Link>
             <Link href="/signup">
-              <Button className="bg-accent px-5 py-2 text-sm font-semibold text-text-on-primary hover:bg-accent/90">
+              <Button size="sm" className="bg-primary text-text-on-primary hover:bg-primary/90">
                 Get Started
               </Button>
             </Link>
@@ -57,252 +42,508 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Main content */}
-      <main>
+      <main className="flex flex-1 flex-col">
       {/* Hero Section */}
-      <section className="relative flex flex-1 items-center bg-primary px-4 py-12 text-text-on-primary lg:py-20 overflow-hidden">
-        <ParticlesBackground
-          className="opacity-30"
-          quantity={30}
-          color="rgba(255, 255, 255, 0.15)"
-        />
-        <div className="container relative z-10 grid gap-10 lg:grid-cols-2 lg:items-center">
-          {/* Text */}
-          <div className="max-w-xl">
-            <p className="mb-4 text-tiny uppercase tracking-[0.18em] text-light-blue">
-              For freelancers, small teams, and everyday users
-            </p>
-            <h1 className="text-hero leading-tight lg:text-[3.5rem]">
-              <TextGenerateEffect
-                words="One global account for work and life money"
-                className="text-text-on-primary"
-                cursorClassName="bg-text-on-primary"
-                duration={10}
-              />
+        <section className="relative overflow-hidden bg-white px-6 py-20 lg:py-32">
+          <div className="container mx-auto max-w-6xl">
+            <motion.div
+              {...fadeInUp}
+              className="mx-auto max-w-3xl text-center"
+            >
+              <h1 className="text-4xl font-bold tracking-tight text-text-strong sm:text-5xl lg:text-6xl">
+                Production-ready wallet infrastructure
             </h1>
-            <p className="mt-4 text-body-lg text-light-blue">
-              Get paid in multiple currencies, hold balances, and send money worldwide from a single, secure wallet.
-            </p>
-
-            {/* Inline journey summary */}
-            <div className="mt-4 flex flex-wrap items-center gap-2 text-tiny text-light-blue/80">
-              <span className="rounded-full bg-surface-base/10 px-2 py-0.5 font-medium text-text-on-primary">
-                1. Create account
-              </span>
-              <span className="text-light-blue/60">›</span>
-              <span className="rounded-full bg-surface-base/10 px-2 py-0.5 font-medium text-text-on-primary">
-                2. Add or receive money
-              </span>
-              <span className="text-light-blue/60">›</span>
-              <span className="rounded-full bg-surface-base/10 px-2 py-0.5 font-medium text-text-on-primary">
-                3. Spend and move funds
-              </span>
-            </div>
-
-            <div className="mt-4 flex flex-wrap gap-2 text-tiny text-primary/10">
-              <span className="rounded-full bg-surface-base/10 px-3 py-1 text-text-on-primary/80">
-                Freelancers & creators
-              </span>
-              <span className="rounded-full bg-surface-base/10 px-3 py-1 text-text-on-primary/80">
-                Remote teams & SMEs
-              </span>
-              <span className="rounded-full bg-surface-base/10 px-3 py-1 text-text-on-primary/80">
-                Everyday consumers
-              </span>
-            </div>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/signup" className="flex-1">
-                <RippleButton
-                  rippleColor="rgba(255, 255, 255, 0.3)"
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent py-3 text-sm font-semibold text-text-on-primary hover:bg-accent/90"
-                >
+              <p className="mt-6 text-lg leading-relaxed text-text-muted sm:text-xl">
+                Build secure, scalable financial products with enterprise-grade reliability. 
+                Trusted by teams shipping real money features.
+              </p>
+              
+              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <Link href="/signup">
+                  <Button size="lg" className="bg-primary text-text-on-primary hover:bg-primary/90">
                   Get Started
-                  <ArrowRight className="h-4 w-4" />
-                </RippleButton>
-              </Link>
-              <Link href="/login" className="flex-1">
-                <RippleButton
-                  rippleColor="rgba(15, 23, 42, 0.1)"
-                  variant="outline"
-                  className="w-full rounded-lg border border-white bg-white text-sm font-semibold text-dark-blue hover:bg-gray-lightest"
-                >
-                  Sign In
-                </RippleButton>
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="/auth/signin">
+                  <Button size="lg" variant="outline" className="border-border-subtle text-text-strong hover:bg-surface-base">
+                    View Dashboard
+                  </Button>
               </Link>
             </div>
 
-            <p className="mt-4 text-small text-gray-light">
-              Bank-level security • 256-bit encryption
-            </p>
-          </div>
+              <p className="mt-6 text-sm text-text-muted">
+                <Shield className="mr-1.5 inline h-4 w-4" />
+                SOC 2 compliant • 256-bit encryption • 99.9% uptime SLA
+              </p>
+            </motion.div>
 
-          {/* Hero Visual – hidden on small screens */}
-          <div className="hidden md:block">
-            <div className="mx-auto w-full max-w-md rounded-3xl bg-dark-blue-dark/60 p-5 shadow-2xl ring-1 ring-white/10">
-              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-deep-teal to-dark-blue-light p-5">
-                {/* Simulated balance card */}
-                <div className="mb-6 rounded-2xl bg-gradient-to-br from-dark-blue-light to-deep-teal px-5 py-4 shadow-lg">
-                  <div className="flex items-center justify-between text-tiny text-light-blue">
-                    <span>Total Balance</span>
-                    <span>Multi-currency</span>
+            {/* Hero Visual - Subtle Virtual Card */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ delay: 0.2, duration: 0.6, ease: easing }}
+              className="mt-16 flex justify-center"
+            >
+              <div className="relative w-full max-w-2xl">
+                <div className="relative rounded-2xl border border-border-subtle bg-gradient-to-br from-surface-base to-white p-8 shadow-lg">
+                  {/* Subtle glassy card mock */}
+                  <div className="relative mx-auto max-w-sm">
+                    <div className="rounded-xl border border-border-subtle/50 bg-white/60 p-6 backdrop-blur-sm shadow-md">
+                      <div className="mb-4 flex items-center justify-between">
+                        <div className="h-8 w-12 rounded bg-gradient-to-br from-primary/20 to-accent/20" />
+                        <div className="h-6 w-6 rounded-full border-2 border-border-subtle" />
                   </div>
-                  <p className="mt-2 text-3xl font-bold text-white">$12,345.67</p>
-                  <p className="mt-1 text-small text-light-blue">
-                    •••• •••• •••• 1234
-                  </p>
+                      <div className="mt-6 space-y-2">
+                        <div className="h-4 w-32 rounded bg-text-muted/20" />
+                        <div className="h-4 w-24 rounded bg-text-muted/10" />
                 </div>
-
-                {/* Small floating cards (light skeuomorphism) */}
-                <div className="space-y-2 text-tiny text-gray-lightest">
-                  <div className="flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 backdrop-blur">
-                    <span>Payment from Wise</span>
-                    <span className="font-semibold text-emerald-light">
-                      +$1,320
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 backdrop-blur">
-                    <span>Virtual card top-up</span>
-                    <span className="font-semibold text-crimson-light">
-                      -$80
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 backdrop-blur">
-                    <span>USDT to EUR exchange</span>
-                    <span className="font-semibold text-emerald-light">
-                      +2.5%
-                    </span>
+                      <div className="mt-6 flex items-center justify-between text-sm text-text-muted">
+                        <span>•••• 1234</span>
+                        <span>12/25</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+            </motion.div>
         </div>
       </section>
 
-      {/* Product overview strip (features + trust) */}
-      <section className="bg-white px-4 py-12 lg:py-16">
-        <div className="container">
-          <div className="text-center">
-            <h2 className="text-h2 text-dark-blue">
-              <GradientText gradientFrom="from-primary" gradientTo="to-accent" animate>
-                Everything you need in one place
-              </GradientText>
+        {/* Dashboard Preview Section */}
+        <section className="bg-slate-50 px-6 py-20 lg:py-32">
+          <div className="container mx-auto max-w-6xl">
+            <motion.div
+              {...fadeInUp}
+              className="mx-auto max-w-2xl text-center"
+            >
+              <h2 className="text-3xl font-bold tracking-tight text-text-strong sm:text-4xl">
+                Built for developers, designed for users
+              </h2>
+              <p className="mt-4 text-lg text-text-muted">
+                A complete dashboard experience with real-time balance updates, 
+                transaction history, and seamless money operations.
+              </p>
+            </motion.div>
+
+            <motion.div
+              {...fadeInUp}
+              transition={{ delay: 0.2, duration: 0.6, ease: easing }}
+              className="mt-12"
+            >
+              <div className="overflow-hidden rounded-xl border border-slate-700/50 bg-slate-900 shadow-2xl">
+                {/* Realistic FinFlow Dashboard Preview */}
+                <div className="bg-surface-base min-h-[600px]">
+                  {/* Top Navigation */}
+                  <div className="border-b border-border-subtle bg-white px-6 py-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <span className="text-lg font-bold text-primary">FinFlow</span>
+                        <nav className="hidden md:flex items-center gap-1">
+                          {["Dashboard", "Cards", "Transactions", "Settings"].map((nav, i) => (
+                            <button
+                              key={nav}
+                              className={`px-3 py-1.5 rounded text-sm font-medium ${
+                                i === 0
+                                  ? "bg-primary/10 text-primary"
+                                  : "text-text-muted hover:text-text-strong"
+                              }`}
+                            >
+                              {nav}
+                            </button>
+                          ))}
+                        </nav>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary/40 to-accent/40" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Dashboard Content */}
+                  <div className="p-6 space-y-6 bg-surface-base">
+                    {/* Welcome Header */}
+                    <div className="mb-6">
+                      <h2 className="text-2xl font-bold text-text-strong">
+                        Welcome back, <span className="text-primary">John Doe</span>
             </h2>
-            <p className="mt-2 text-body text-gray">
-              <ShimmeringText>
-                Rich, intuitive experiences for your daily money, backed by enterprise‑grade safeguards.
-              </ShimmeringText>
+                      <p className="mt-2 text-sm text-text-muted">
+                        Here&apos;s a snapshot of your wallets, cards, and activity.
             </p>
           </div>
 
-          <div className="mt-10 grid gap-10 lg:grid-cols-3 lg:items-start">
-            {/* Feature cards */}
-            <div className="space-y-6 lg:col-span-2">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {features.map(({ icon: Icon, title, description }) => (
-                  <div
-                    key={title}
-                    className="rounded-2xl border border-gray-lighter bg-white p-6 shadow-sm transition-transform transition-shadow hover:-translate-y-1 hover:shadow-md"
-                  >
-                    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-light-blue-pale">
-                      <Icon className="h-5 w-5 text-light-blue-dark" />
+                    {/* Balance Card - Gradient */}
+                    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary via-primary to-accent text-white shadow-xl">
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
+                      <div className="relative z-10 p-6 md:p-8">
+                        <div className="mb-6 flex items-start justify-between">
+                          <div className="flex-1">
+                            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-white/80">
+                              Total balance
+                            </p>
+                            <p className="text-5xl font-bold tracking-tight md:text-6xl text-white">
+                              $12,345.67
+                            </p>
+                          </div>
+                          <div className="rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-right backdrop-blur-sm">
+                            <p className="text-xs font-medium uppercase tracking-wide text-white/70">
+                              Available
+                            </p>
+                            <p className="mt-0.5 text-base font-semibold text-white">
+                              $12,345.67
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-3 md:flex-row md:items-stretch">
+                          <button className="flex-1 gap-2.5 rounded-lg bg-white/20 backdrop-blur-sm py-3 px-4 text-sm font-semibold text-white hover:bg-white/30 transition-all">
+                            <Plus className="h-5 w-5 inline" /> Add Money
+                          </button>
+                          <button className="flex-1 gap-2.5 rounded-lg border border-white/30 bg-transparent py-3 px-4 text-sm font-semibold text-white hover:bg-white/10 transition-all">
+                            <Send className="h-5 w-5 inline" /> Send Money
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <h3 className="text-h3 text-dark-gray">
-                      <GradientText gradientFrom="from-primary" gradientTo="to-accent">
-                        {title}
-                      </GradientText>
-                    </h3>
-                    <p className="mt-2 text-body text-gray">{description}</p>
-                  </div>
-                ))}
+
+                    {/* Main Grid */}
+                    <div className="grid gap-6 lg:grid-cols-3">
+                      {/* Left Column */}
+            <div className="space-y-6 lg:col-span-2">
+                        {/* Virtual Card */}
+                        <div className="relative h-60 w-full rounded-xl border-0 bg-gradient-to-br from-primary via-primary to-accent text-white shadow-xl overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
+                          <div className="relative z-10 flex h-full flex-col p-6 md:p-7">
+                            <div className="mb-5 flex items-start justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-white/20 text-xs font-semibold">
+                                  F
+                                </div>
+                                <div>
+                                  <span className="text-xs font-medium text-white/70">Virtual debit</span>
+                                  <span className="block text-sm font-semibold">FinFlow</span>
+                                </div>
+                              </div>
+                              <div className="h-7 w-10 rounded bg-white/10 border border-white/20" />
+                            </div>
+                            <div className="mb-4 flex-1">
+                              <p className="mb-1 text-xs uppercase tracking-widest text-white/70">Card number</p>
+                              <p className="text-xl font-mono tracking-widest md:text-2xl">4532 •••• •••• 1234</p>
+                            </div>
+                            <div className="mt-auto flex items-end justify-between text-sm">
+                              <div>
+                                <p className="text-xs uppercase tracking-widest text-white/70">Cardholder</p>
+                                <p className="mt-1 font-semibold">JOHN DOE</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-xs uppercase tracking-widest text-white/70">Valid thru</p>
+                                <p className="mt-1 font-semibold">12/25</p>
+                              </div>
+                    </div>
               </div>
             </div>
 
-            {/* Trust / compliance column */}
-            <aside className="space-y-4 rounded-2xl border border-gray-lighter bg-gray-lightest px-5 py-6">
-              <p className="text-small font-semibold text-dark-blue">
-                Built for serious money workflows
-              </p>
-              <p className="text-small text-gray">
-                FinFlow is designed with patterns used by modern banks and payment platforms, so your teams and
-                clients feel at home from day one.
-              </p>
-              <div className="mt-2 grid grid-cols-3 gap-3 text-center text-tiny text-gray md:grid-cols-3">
-                {["NovaBank", "AtlasPay", "GlobeX"].map((name) => (
-                  <div
-                    key={name}
-                    className="flex h-10 items-center justify-center rounded-lg border border-gray-lighter bg-white text-gray-light"
-                  >
-                    {name}
+                        {/* Transactions List */}
+                        <div className="rounded-xl border border-border-subtle bg-white shadow-md">
+                          <div className="border-b border-border-subtle p-6 pb-4">
+                            <h3 className="text-lg font-semibold text-text-strong">Recent transactions</h3>
+                            <p className="mt-1.5 text-xs text-text-muted">Updated just now</p>
+                          </div>
+                          <div className="p-6 space-y-3">
+                            {[
+                              { desc: "Payment from Wise", date: "Today", amount: "+$1,320.00", type: "credit" },
+                              { desc: "Virtual card top-up", date: "Yesterday", amount: "-$80.00", type: "debit" },
+                              { desc: "USDT to EUR exchange", date: "2 days ago", amount: "+$2,450.00", type: "credit" },
+                              { desc: "Subscription payment", date: "3 days ago", amount: "-$29.99", type: "debit" },
+                            ].map((txn, i) => (
+                              <div key={i} className="flex items-center gap-4 rounded-lg border border-border-subtle bg-surface-base px-5 py-4 hover:bg-surface-raised transition-colors">
+                                <div className={`flex h-11 w-11 items-center justify-center rounded-lg border-2 ${
+                                  txn.type === "credit" 
+                                    ? "border-green-200 bg-green-50 text-green-600" 
+                                    : "border-red-200 bg-red-50 text-red-600"
+                                }`}>
+                                  {txn.type === "credit" ? "↓" : "↑"}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="text-sm font-semibold text-text-strong">{txn.desc}</div>
+                                  <div className="mt-2 flex items-center gap-2 text-xs text-text-muted">
+                                    <span>{txn.date}</span>
+                                  </div>
+                                </div>
+                                <div className={`text-base font-bold ${
+                                  txn.type === "credit" ? "text-green-600" : "text-red-600"
+                                }`}>
+                                  {txn.amount}
+                                </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-3 space-y-2 text-tiny text-gray">
-                <p className="font-medium text-dark-blue">Safety & reliability</p>
-                <ul className="space-y-1">
-                  {["PCI‑style card handling", "256‑bit SSL everywhere", "Read‑only demo data (no real funds)"].map(
-                    (item) => (
-                      <li key={item} className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 rounded-full bg-light-blue" aria-hidden="true" />
-                        <span>{item}</span>
-                      </li>
-                    )
-                  )}
-                </ul>
+                        </div>
+                      </div>
+
+                      {/* Right Sidebar - Quick Actions */}
+                      <aside className="space-y-6">
+                        <div className="rounded-xl border border-border-subtle bg-white p-6 shadow-md">
+                          <h3 className="mb-2 text-sm font-semibold text-text-strong">Quick actions</h3>
+                          <p className="mb-5 text-xs text-text-muted">
+                            Common money tasks for your main wallet.
+                          </p>
+                          <div className="space-y-3">
+                            <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 transition-all">
+                              <Plus className="h-4 w-4" /> Add Money
+                            </button>
+                            <button className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-border-subtle py-2.5 text-sm font-semibold text-text-strong hover:bg-surface-base transition-all">
+                              <Send className="h-4 w-4" /> Send Money
+                            </button>
+                            <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-border-subtle py-2.5 text-sm font-medium text-text-default hover:bg-surface-base transition-all">
+                              <Download className="h-4 w-4" /> Download CSV
+                            </button>
+                          </div>
               </div>
             </aside>
           </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
         </div>
       </section>
 
-      {/* Stats strip */}
-      <section className="bg-surface-base py-8">
-        <div className="container px-4">
-          <div className="grid grid-cols-2 gap-4 text-center text-small text-text-muted md:grid-cols-4">
-            {[
-              { value: "$2B+", label: "Total volume (demo)" },
-              { value: "150+", label: "Countries represented" },
-              { value: "99.9%", label: "Target uptime" },
-              { value: "24/7", label: "Monitoring & alerts" },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-lg border border-border-subtle bg-surface-raised px-4 py-4"
-              >
-                <p className="text-h2 text-text-strong">{stat.value}</p>
-                <p className="mt-1 text-small text-text-muted">{stat.label}</p>
+        {/* Features Grid */}
+        <section className="bg-white px-6 py-20 lg:py-32">
+          <div className="container mx-auto max-w-6xl">
+            <motion.div
+              {...fadeInUp}
+              className="mx-auto max-w-2xl text-center"
+            >
+              <h2 className="text-3xl font-bold tracking-tight text-text-strong sm:text-4xl">
+                Everything you need to build
+              </h2>
+              <p className="mt-4 text-lg text-text-muted">
+                Comprehensive APIs and tools for modern financial applications.
+              </p>
+            </motion.div>
+
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                {
+                  icon: Shield,
+                  title: "Enterprise Security",
+                  description: "Bank-level encryption, SOC 2 compliance, and comprehensive audit logs.",
+                },
+                {
+                  icon: Zap,
+                  title: "Real-time Updates",
+                  description: "Webhooks and live balance synchronization for instant transaction processing.",
+                },
+                {
+                  icon: Globe,
+                  title: "Multi-currency",
+                  description: "Support for 50+ currencies with automatic conversion and settlement.",
+                },
+                {
+                  icon: Code,
+                  title: "Developer-First",
+                  description: "RESTful APIs, comprehensive documentation, and SDKs for all platforms.",
+                },
+              ].map((feature, index) => (
+                <motion.div
+                  key={feature.title}
+                  {...fadeInUp}
+                  transition={{ delay: 0.1 * index, duration: 0.5, ease: easing }}
+                  className="rounded-xl border border-border-subtle bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md"
+                >
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/5">
+                    <feature.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-text-strong">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-2 text-text-muted">
+                    {feature.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Onboarding Section */}
+        <section className="bg-slate-50 px-6 py-20 lg:py-32">
+          <div className="container mx-auto max-w-4xl">
+            <motion.div
+              {...fadeInUp}
+              className="mx-auto max-w-2xl text-center"
+            >
+              <h2 className="text-3xl font-bold tracking-tight text-text-strong sm:text-4xl">
+                Get started in minutes
+              </h2>
+              <p className="mt-4 text-lg text-text-muted">
+                Simple, fast onboarding that gets your team up and running quickly.
+              </p>
+            </motion.div>
+
+            <motion.div
+              {...fadeInUp}
+              transition={{ delay: 0.2, duration: 0.6, ease: easing }}
+              className="mt-12"
+            >
+              <div className="relative">
+                {/* Progress line */}
+                <div className="absolute left-8 top-0 h-full w-0.5 bg-border-subtle" />
+                
+                {/* Steps */}
+                <div className="space-y-8">
+                  {[
+                    { step: 1, title: "Create Account", description: "Sign up with email and verify your identity." },
+                    { step: 2, title: "Add Funds", description: "Connect your bank or add money via card." },
+                    { step: 3, title: "Create Virtual Card", description: "Generate cards for online purchases instantly." },
+                    { step: 4, title: "Start Transacting", description: "Send money, make payments, and manage your wallet." },
+                  ].map((item, index) => (
+                    <div key={item.step} className="relative flex gap-6">
+                      <div className="relative z-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-primary bg-white text-lg font-semibold text-primary">
+                        {item.step}
+                      </div>
+                      <div className="flex-1 pb-8">
+                        <h3 className="text-xl font-semibold text-text-strong">
+                          {item.title}
+                        </h3>
+                        <p className="mt-1 text-text-muted">
+                          {item.description}
+                        </p>
+                      </div>
               </div>
             ))}
           </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Developer Section */}
+        <section className="bg-white px-6 py-20 lg:py-32">
+          <div className="container mx-auto max-w-4xl">
+            <motion.div
+              {...fadeInUp}
+              className="mx-auto max-w-2xl text-center"
+            >
+              <h2 className="text-3xl font-bold tracking-tight text-text-strong sm:text-4xl">
+                Built for production
+              </h2>
+              <p className="mt-4 text-lg text-text-muted">
+                Monitor, debug, and scale with confidence using our developer tools.
+              </p>
+            </motion.div>
+
+            <motion.div
+              {...fadeInUp}
+              transition={{ delay: 0.2, duration: 0.6, ease: easing }}
+              className="mt-12"
+            >
+              <div className="overflow-hidden rounded-xl border border-border-subtle bg-slate-900 shadow-lg">
+                <div className="border-b border-slate-700/50 bg-slate-800 px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 rounded-full bg-red-500" />
+                    <div className="h-3 w-3 rounded-full bg-yellow-500" />
+                    <div className="h-3 w-3 rounded-full bg-green-500" />
+                    <span className="ml-4 text-sm font-mono text-slate-400">
+                      terminal
+                    </span>
+                  </div>
+                </div>
+                <div className="p-6 font-mono text-sm">
+                  <div className="space-y-2 text-slate-300">
+                    <div>
+                      <span className="text-slate-500">$</span>{" "}
+                      <span className="text-green-400">curl</span>{" "}
+                      <span className="text-blue-400">-X POST</span>{" "}
+                      <span className="text-purple-400">https://api.finflow.com/v1/transfers</span>
+                    </div>
+                    <div className="ml-4">
+                      <span className="text-slate-500">-H</span>{" "}
+                      <span className="text-yellow-400">&quot;Authorization: Bearer sk_live_...&quot;</span>
+                    </div>
+                    <div className="ml-4">
+                      <span className="text-slate-500">-d</span>{" "}
+                      <span className="text-cyan-400">
+                        &apos;{jsonPayload}&apos;
+                      </span>
+                    </div>
+                    <div className="mt-4">
+                      <span className="text-slate-500">{">"}</span>{" "}
+                      <span className="text-green-400">{"{"}</span>
+                    </div>
+                    <div className="ml-4 text-slate-400">
+                      <span className="text-blue-400">&quot;id&quot;</span>:{" "}
+                      <span className="text-yellow-400">&quot;txn_abc123&quot;</span>,
+                    </div>
+                    <div className="ml-4 text-slate-400">
+                      <span className="text-blue-400">&quot;status&quot;</span>:{" "}
+                      <span className="text-green-400">&quot;completed&quot;</span>,
+                    </div>
+                    <div className="ml-4 text-slate-400">
+                      <span className="text-blue-400">&quot;amount&quot;</span>:{" "}
+                      <span className="text-cyan-400">1000</span>
+                    </div>
+                    <div>
+                      <span className="text-green-400">{"}"}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="bg-slate-50 px-6 py-20 lg:py-32">
+          <div className="container mx-auto max-w-4xl text-center">
+            <motion.div {...fadeInUp}>
+              <h2 className="text-3xl font-bold tracking-tight text-text-strong sm:text-4xl">
+                Ready to get started?
+              </h2>
+              <p className="mt-4 text-lg text-text-muted">
+                Join teams building the future of financial infrastructure.
+              </p>
+              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <Link href="/signup">
+                  <Button size="lg" className="bg-primary text-text-on-primary hover:bg-primary/90">
+                    Get Started
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="/auth/signin">
+                  <Button size="lg" variant="outline" className="border-border-subtle text-text-strong hover:bg-surface-base">
+                    Sign In
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
         </div>
       </section>
       </main>
 
       {/* Footer */}
-      <footer className="bg-primary py-10 text-text-on-primary">
-        <div className="container px-4">
-          <div className="grid gap-8 md:grid-cols-4">
+      <footer className="border-t border-border-subtle bg-white px-6 py-12">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <div className="mb-4 flex items-center">
-                <span className="text-base font-semibold">FinFlow</span>
+              <div className="mb-4">
+                <span className="text-lg font-semibold text-text-strong">FinFlow</span>
               </div>
-              <p className="text-small text-text-muted">
-                A modern demo platform for cross-border money, built with real
-                world UX patterns.
+              <p className="text-sm text-text-muted">
+                Production-ready wallet infrastructure for modern financial applications.
               </p>
             </div>
 
             <div>
-              <p className="mb-3 text-small font-semibold">Product</p>
-              <ul className="space-y-2 text-small text-text-muted">
+              <p className="mb-3 text-sm font-semibold text-text-strong">Product</p>
+              <ul className="space-y-2 text-sm text-text-muted">
                 <li>
-                  <Link href="/dashboard" className="hover:underline">
+                  <Link href="/dashboard" className="hover:text-text-strong transition-colors">
                     Dashboard
                   </Link>
                 </li>
                 <li>
-                  <Link href="/signup" className="hover:underline">
+                  <Link href="/signup" className="hover:text-text-strong transition-colors">
                     Get Started
                   </Link>
                 </li>
@@ -310,37 +551,35 @@ export default function HomePage() {
             </div>
 
             <div>
-              <p className="mb-3 text-small font-semibold">Company</p>
-              <ul className="space-y-2 text-small text-text-muted">
+              <p className="mb-3 text-sm font-semibold text-text-strong">Company</p>
+              <ul className="space-y-2 text-sm text-text-muted">
                 <li>
-                  <button className="text-left hover:underline">About</button>
+                  <button className="text-left hover:text-text-strong transition-colors">About</button>
                 </li>
                 <li>
-                  <button className="text-left hover:underline">Security</button>
+                  <button className="text-left hover:text-text-strong transition-colors">Security</button>
                 </li>
               </ul>
             </div>
 
             <div>
-              <p className="mb-3 text-small font-semibold">Legal</p>
-              <ul className="space-y-2 text-small text-text-muted">
+              <p className="mb-3 text-sm font-semibold text-text-strong">Legal</p>
+              <ul className="space-y-2 text-sm text-text-muted">
                 <li>
-                  <button className="text-left hover:underline">Privacy</button>
+                  <button className="text-left hover:text-text-strong transition-colors">Privacy</button>
                 </li>
                 <li>
-                  <button className="text-left hover:underline">Terms</button>
+                  <button className="text-left hover:text-text-strong transition-colors">Terms</button>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-8 border-t border-border-subtle/40 pt-6 text-center text-tiny text-text-muted">
-            © {new Date().getFullYear()} FinFlow. Demo application for
-            educational purposes only.
+          <div className="mt-8 border-t border-border-subtle pt-8 text-center text-sm text-text-muted">
+            © {new Date().getFullYear()} FinFlow. All rights reserved.
           </div>
         </div>
       </footer>
     </div>
   )
 }
-

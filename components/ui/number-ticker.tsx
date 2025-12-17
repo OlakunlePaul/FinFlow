@@ -3,30 +3,29 @@
 import { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
-interface CountingNumberProps {
+interface NumberTickerProps {
   value: number
   duration?: number
   className?: string
+  currency?: string
+  locale?: string
   decimals?: number
-  prefix?: string
-  suffix?: string
 }
 
-export function CountingNumber({
+export function NumberTicker({
   value,
   duration = 2000,
   className,
+  currency = "USD",
+  locale = "en-US",
   decimals = 2,
-  prefix = "",
-  suffix = "",
-}: CountingNumberProps) {
+}: NumberTickerProps) {
   const [displayValue, setDisplayValue] = useState(value)
   const [isAnimating, setIsAnimating] = useState(false)
-  const startValueRef = useRef(value)
   const startTimeRef = useRef<number | null>(null)
   const animationFrameRef = useRef<number | null>(null)
+  const previousValueRef = useRef(value)
   const displayValueRef = useRef(value)
-  const isInitialMountRef = useRef(true)
 
   // Keep displayValueRef in sync with displayValue
   useEffect(() => {
@@ -34,26 +33,22 @@ export function CountingNumber({
   }, [displayValue])
 
   useEffect(() => {
-    // On initial mount, just set the value without animation
-    if (isInitialMountRef.current) {
-      isInitialMountRef.current = false
-      setDisplayValue(value)
-      displayValueRef.current = value
-      startValueRef.current = value
+    // If value hasn't changed, no need to animate
+    if (previousValueRef.current === value) {
       return
     }
 
-    // If value hasn't changed, no need to animate
-    if (startValueRef.current === value) {
-      setDisplayValue(value)
-      displayValueRef.current = value
-      return
+    // Cancel any ongoing animation
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current)
+      animationFrameRef.current = null
     }
 
     setIsAnimating(true)
-    const startValue = startValueRef.current
-    const endValue = value
     const startTime = performance.now()
+    // Use current displayed value as start (in case animation was interrupted)
+    const startValue = displayValueRef.current
+    const endValue = value
 
     const animate = (currentTime: number) => {
       if (startTimeRef.current === null) {
@@ -68,13 +63,12 @@ export function CountingNumber({
       const currentValue = startValue + (endValue - startValue) * easeOut
 
       setDisplayValue(currentValue)
-      displayValueRef.current = currentValue
 
       if (progress < 1) {
         animationFrameRef.current = requestAnimationFrame(animate)
       } else {
         setIsAnimating(false)
-        startValueRef.current = value
+        previousValueRef.current = value
         startTimeRef.current = null
       }
     }
@@ -86,25 +80,24 @@ export function CountingNumber({
         cancelAnimationFrame(animationFrameRef.current)
         animationFrameRef.current = null
       }
-      // Update startValueRef to current displayValue when animation is cancelled
-      // to prevent visual jumps when value changes before animation completes
-      startValueRef.current = displayValueRef.current
-      startTimeRef.current = null
+      // Update previous value to current displayed value when animation is cancelled
+      previousValueRef.current = displayValueRef.current
     }
   }, [value, duration])
 
-  const formatValue = (num: number) => {
-    return new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-    }).format(num)
-  }
+  // Format using Intl.NumberFormat for proper currency formatting
+  const formatter = new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })
+
+  const formattedValue = formatter.format(displayValue)
 
   return (
     <span className={cn("tabular-nums", className)}>
-      {prefix}
-      {formatValue(displayValue)}
-      {suffix}
+      {formattedValue}
     </span>
   )
 }

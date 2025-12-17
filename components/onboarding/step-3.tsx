@@ -94,7 +94,7 @@ export function OnboardingStep3() {
         <Button
           type="button"
           onClick={continueToNext}
-          className="flex-1"
+          className="flex-1 text-white"
           disabled={!idUploaded}
         >
           Continue

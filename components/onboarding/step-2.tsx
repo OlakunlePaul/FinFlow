@@ -6,6 +6,7 @@ import { z } from "zod"
 import { useOnboardingStore } from "@/lib/store/onboarding-store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { AnimatedInputWrapper } from "@/components/ui/animated-input-wrapper"
 import { sanitizeInput } from "@/lib/utils"
 
 const step2Schema = z.object({
@@ -60,10 +61,9 @@ export function OnboardingStep2() {
       </div>
 
       <div className="space-y-4">
-        <div>
-          <label htmlFor="name" className="mb-2 block text-sm font-medium">
-            Full Name
-          </label>
+        <AnimatedInputWrapper
+          label="Full Name"
+        >
           <Input
             id="name"
             type="text"
@@ -71,34 +71,40 @@ export function OnboardingStep2() {
             {...register("name")}
             className={errors.name ? "border-destructive" : ""}
           />
-          {errors.name && (
-            <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>
-          )}
-        </div>
+        </AnimatedInputWrapper>
+        {errors.name && (
+          <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>
+        )}
 
-        <div>
-          <label htmlFor="dob" className="mb-1 block text-sm font-medium">
-            Date of birth{" "}
-            <span className="text-xs font-normal text-muted-foreground">(you must be at least 18 years old)</span>
-          </label>
+        <AnimatedInputWrapper
+          label={
+            <>
+              Date of birth{" "}
+              <span className="text-xs font-normal text-muted-foreground">(you must be at least 18 years old)</span>
+            </>
+          }
+        >
           <Input
             id="dob"
             type="date"
             {...register("dob")}
             className={errors.dob ? "border-destructive" : ""}
           />
-          {errors.dob && (
-            <p className="mt-1 text-sm text-destructive">{errors.dob.message}</p>
-          )}
-        </div>
+        </AnimatedInputWrapper>
+        {errors.dob && (
+          <p className="mt-1 text-sm text-destructive">{errors.dob.message}</p>
+        )}
 
-        <div>
-          <label htmlFor="address" className="mb-1 block text-sm font-medium">
-            Address{" "}
-            <span className="text-xs font-normal text-muted-foreground">
-              (include city, state, ZIP/postcode, and country)
-            </span>
-          </label>
+        <AnimatedInputWrapper
+          label={
+            <>
+              Address{" "}
+              <span className="text-xs font-normal text-muted-foreground">
+                (include city, state, ZIP/postcode, and country)
+              </span>
+            </>
+          }
+        >
           <Input
             id="address"
             type="text"
@@ -106,17 +112,17 @@ export function OnboardingStep2() {
             {...register("address")}
             className={errors.address ? "border-destructive" : ""}
           />
-          {errors.address && (
-            <p className="mt-1 text-sm text-destructive">{errors.address.message}</p>
-          )}
-        </div>
+        </AnimatedInputWrapper>
+        {errors.address && (
+          <p className="mt-1 text-sm text-destructive">{errors.address.message}</p>
+        )}
       </div>
 
       <div className="flex gap-4">
         <Button type="button" variant="outline" onClick={goBack} className="flex-1">
           Back
         </Button>
-        <Button type="submit" className="flex-1" disabled={isSubmitting}>
+        <Button type="submit" className="flex-1 text-white" disabled={isSubmitting}>
           {isSubmitting ? "Processing..." : "Continue"}
         </Button>
       </div>

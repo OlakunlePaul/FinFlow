@@ -33,6 +33,8 @@ import { Sparkles } from "@/components/ui/sparkles"
 import { BackgroundBeams } from "@/components/ui/background-beams"
 import { GradientText } from "@/components/ui/gradient-text"
 import { exportTransactionsCsv } from "@/lib/transactions/export-csv"
+import { motion, AnimatePresence } from "framer-motion"
+import { springPresets } from "@/lib/hooks/use-motion-config"
 
 function KpiRow() {
   const items = [
@@ -44,7 +46,7 @@ function KpiRow() {
   return (
     <section aria-label="Account summary" className="space-y-3">
       <h3 className="text-sm font-semibold">
-        <GradientText className="text-text-strong">Account summary</GradientText>
+        <GradientText>Account summary</GradientText>
       </h3>
       <p className="text-tiny text-text-muted">
         Sample performance metrics for this demo environment.
@@ -212,17 +214,17 @@ export function WalletDashboard() {
       )}
 
       {/* Main content */}
-      <main className="container pb-20 pt-5 md:pb-10 md:pt-8">
-        <div className="mb-4 space-y-3 md:mb-7">
-          <div className="flex items-start justify-between gap-3">
+      <main className="container pb-20 pt-6 md:pb-12 md:pt-10">
+        <div className="mb-6 space-y-4 md:mb-8">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h2 className="text-h2 text-text-strong">
+              <h2 className="text-h1 font-bold tracking-tight text-text-strong">
                 Welcome back,{" "}
-                <GradientText className="font-semibold">
+                <span className="text-primary">
                   {session?.user?.name || "User"}
-                </GradientText>
+                </span>
               </h2>
-              <p className="mt-1 text-small text-text-muted">
+              <p className="mt-2 text-body leading-relaxed text-text-muted">
                 Here&apos;s a snapshot of your wallets, cards, and activity.
               </p>
             </div>
@@ -240,48 +242,60 @@ export function WalletDashboard() {
             </Button>
           </div>
 
-          {/* Account selector */}
-          <div className="relative flex flex-wrap items-center justify-between gap-3">
-            <section aria-label="Account overview">
-              <h3 className="text-small font-semibold text-text-muted">
+          {/* Account selector section */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-small font-semibold text-text-strong">
                 Account overview
               </h3>
-            </section>
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface-raised px-3 py-1 text-tiny font-medium text-text-default hover:bg-surface-base focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-              aria-label="Select account"
-              aria-expanded={accountMenuOpen}
-              onClick={() => setAccountMenuOpen((open) => !open)}
-            >
-              <span>Primary USD wallet</span>
-              <ChevronDown className="h-3 w-3" aria-hidden="true" />
-            </button>
+              <div className="relative">
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-lg border border-border-subtle bg-surface-raised px-3 py-1.5 text-xs font-medium text-text-default shadow-sm transition-all duration-200 hover:bg-surface-base hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2"
+                  aria-label="Select account"
+                  aria-expanded={accountMenuOpen}
+                  onClick={() => setAccountMenuOpen((open) => !open)}
+                >
+                  <span>Primary USD wallet</span>
+                  <ChevronDown className="h-3 w-3" aria-hidden="true" />
+                </button>
 
-            {accountMenuOpen && (
-              <div className="mt-2 w-full rounded-xl border border-border-subtle bg-surface-raised p-3 text-tiny text-text-default shadow-md sm:absolute sm:right-0 sm:top-8 sm:mt-1 sm:w-72">
-                <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
-                  Current account
-                </p>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-small font-medium text-text-strong">
-                    Primary USD wallet
-                  </span>
-                  <span className="text-[11px] text-text-muted">
-                    USD · ••••1234
-                  </span>
-                </div>
-                <p className="mt-2 text-[11px] text-text-muted">
-                  Multi-account switching is coming soon in this demo.
-                </p>
+                <AnimatePresence>
+                  {accountMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{
+                        type: "spring",
+                        ...springPresets.gentle,
+                      }}
+                      className="absolute right-0 top-full mt-2 z-50 w-72 rounded-xl border border-border-subtle bg-surface-raised p-4 text-xs text-text-default shadow-xl"
+                    >
+                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
+                        Current account
+                      </p>
+                      <div className="flex items-center justify-between gap-3 mb-3">
+                        <span className="text-small font-medium text-text-strong">
+                          Primary USD wallet
+                        </span>
+                        <span className="text-[11px] text-text-muted">
+                          USD · ••••1234
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-text-muted">
+                        Multi-account switching is coming soon in this demo.
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            )}
+            </div>
+            <p className="text-tiny text-text-muted">
+              This is a sandbox demo environment. Balances and transactions are sample data only.
+            </p>
           </div>
         </div>
-
-        <p className="mb-4 text-tiny text-text-muted">
-          This is a sandbox demo environment. Balances and transactions are sample data only.
-        </p>
 
         {isFirstTime && (
           <section
@@ -339,58 +353,72 @@ export function WalletDashboard() {
           </section>
         )}
 
-        <div className="grid gap-5 md:grid-cols-3">
-          {/* Left / main column */}
-          <div className="space-y-5 md:col-span-2">
-            <BalanceCard
-              onAddMoney={() => setShowAddMoney(true)}
-              onSendMoney={() => setShowSendMoney(true)}
-            />
-            <KpiRow />
-            <VirtualCard />
-            <TransactionsList onAddMoney={() => setShowAddMoney(true)} />
-          </div>
+        {/* Main Dashboard Layout */}
+        <div className="space-y-6">
+          {/* Balance Section - Visually Dominant */}
+          <BalanceCard
+            onAddMoney={() => setShowAddMoney(true)}
+            onSendMoney={() => setShowSendMoney(true)}
+          />
 
-          {/* Right sidebar: quick actions */}
-          <aside className="space-y-4">
-            <div className="rounded-2xl border border-border-subtle bg-surface-raised p-5 shadow-md">
-              <h3 className="mb-1 text-small font-semibold text-text-strong">
-                Quick actions
-              </h3>
-              <p className="mb-4 text-tiny text-text-muted">
-                Common money tasks for your main wallet.
-              </p>
-              <div className="space-y-3">
-                <RippleButton
-                  rippleColor="rgba(255, 255, 255, 0.3)"
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-small font-semibold text-text-on-primary transition-fast hover:bg-primary/90"
-                  onClick={() => setShowAddMoney(true)}
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Money
-                </RippleButton>
-                <MagneticButton
-                  magneticStrength={0.2}
-                  variant="outline"
-                  className="flex w-full items-center justify-center gap-2 rounded-lg border-border-subtle py-2.5 text-small font-semibold text-text-strong hover:bg-surface-base"
-                  onClick={() => setShowSendMoney(true)}
-                >
-                  <Send className="h-4 w-4" />
-                  Send Money
-                </MagneticButton>
-                <MagneticButton
-                  magneticStrength={0.2}
-                  variant="outline"
-                  className="flex w-full items-center justify-center gap-2 rounded-lg border-border-subtle py-2.5 text-small font-medium text-text-default hover:bg-surface-base"
-                  onClick={() => exportTransactionsCsv()}
-                  aria-label="Download transaction statement as CSV"
-                >
-                  <Download className="h-4 w-4" />
-                  Download statement (CSV)
-                </MagneticButton>
-              </div>
+          {/* Secondary Content Grid */}
+          <div className="grid gap-6 lg:grid-cols-3">
+            {/* Left Column: Card + Transactions */}
+            <div className="space-y-6 lg:col-span-2">
+              <VirtualCard />
+              <TransactionsList onAddMoney={() => setShowAddMoney(true)} />
             </div>
-          </aside>
+
+            {/* Right Sidebar: Quick Actions */}
+            <aside className="space-y-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  type: "spring",
+                  ...springPresets.gentle,
+                  delay: 0.2,
+                }}
+                className="rounded-xl border border-border-subtle bg-surface-raised p-6 shadow-md"
+              >
+                <h3 className="mb-2 text-sm font-semibold text-text-strong">
+                  Quick actions
+                </h3>
+                <p className="mb-5 text-xs text-text-muted">
+                  Common money tasks for your main wallet.
+                </p>
+                <div className="space-y-3">
+                  <MagneticButton
+                    magneticStrength={0.15}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md active:scale-[0.98]"
+                    onClick={() => setShowAddMoney(true)}
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add Money
+                  </MagneticButton>
+                  <MagneticButton
+                    magneticStrength={0.15}
+                    variant="outline"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-border-subtle py-2.5 text-sm font-semibold text-text-strong transition-all duration-200 hover:bg-surface-base hover:border-primary/30 active:scale-[0.98]"
+                    onClick={() => setShowSendMoney(true)}
+                  >
+                    <Send className="h-4 w-4" />
+                    Send Money
+                  </MagneticButton>
+                  <MagneticButton
+                    magneticStrength={0.15}
+                    variant="outline"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-border-subtle py-2.5 text-sm font-medium text-text-default transition-all duration-200 hover:bg-surface-base active:scale-[0.98]"
+                    onClick={() => exportTransactionsCsv()}
+                    aria-label="Download transaction statement as CSV"
+                  >
+                    <Download className="h-4 w-4" />
+                    Download CSV
+                  </MagneticButton>
+                </div>
+              </motion.div>
+            </aside>
+          </div>
         </div>
       </main>
 

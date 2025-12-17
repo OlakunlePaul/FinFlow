@@ -70,7 +70,7 @@ export function ParticlesBackground({
     }
   }
 
-  const circleParams = (): Circle => {
+  const circleParams = useCallback((): Circle => {
     const x = Math.floor(Math.random() * canvasSize.current.w)
     const y = Math.floor(Math.random() * canvasSize.current.h)
     const translateX = 0
@@ -93,12 +93,17 @@ export function ParticlesBackground({
       dy,
       magnetism,
     }
-  }
+  }, [])
 
-  const drawCircle = (circle: Circle, update = false) => {
+  const drawCircle = useCallback((circle: Circle, update = false) => {
     if (context.current) {
       const { x, y, translateX, translateY, size, alpha } = circle
-      context.current.translate(translateX, translateY)
+      // Set transform with scale (dpr) and translation (translateX, translateY)
+      // setTransform(a, b, c, d, e, f) where:
+      // - a, d: horizontal and vertical scaling
+      // - b, c: skewing
+      // - e, f: horizontal and vertical translation
+      context.current.setTransform(dpr, 0, 0, dpr, translateX, translateY)
       context.current.beginPath()
       context.current.arc(x, y, size, 0, 2 * Math.PI)
       
@@ -112,15 +117,16 @@ export function ParticlesBackground({
       )
       context.current.fillStyle = colorWithAlpha
       context.current.fill()
+      // Reset transform to base scale for next draw
       context.current.setTransform(dpr, 0, 0, dpr, 0, 0)
 
       if (!update) {
         circles.current.push(circle)
       }
     }
-  }
+  }, [dpr])
 
-  const resizeCanvas = () => {
+  const resizeCanvas = useCallback(() => {
     if (canvasContainerRef.current && canvasRef.current && context.current) {
       circles.current.length = 0
       canvasSize.current.w = canvasContainerRef.current.offsetWidth
@@ -131,7 +137,7 @@ export function ParticlesBackground({
       canvasRef.current.style.height = `${canvasSize.current.h}px`
       context.current.scale(dpr, dpr)
     }
-  }
+  }, [dpr])
 
   const drawParticles = useCallback(() => {
     clearContext()
@@ -140,12 +146,12 @@ export function ParticlesBackground({
       const circle = circleParams()
       drawCircle(circle)
     }
-  }, [])
+  }, [circleParams, drawCircle])
 
   const initCanvas = useCallback(() => {
     resizeCanvas()
     drawParticles()
-  }, [drawParticles])
+  }, [resizeCanvas, drawParticles])
 
   const remapValue = (
     value: number,
@@ -159,8 +165,11 @@ export function ParticlesBackground({
     return remapped > 0 ? remapped : 0
   }
 
-  const animate = () => {
+  const animate = useCallback(() => {
     clearContext()
+    // Collect circles to remove instead of mutating during iteration
+    const circlesToRemove: number[] = []
+    
     circles.current.forEach((circle: Circle, i: number) => {
       const edge = [
         circle.x + circle.translateX - circle.size,
@@ -199,13 +208,21 @@ export function ParticlesBackground({
         circle.y < -circle.size ||
         circle.y > canvasSize.current.h + circle.size
       ) {
-        circles.current.splice(i, 1)
-        const newCircle = circleParams()
-        drawCircle(newCircle)
+        // Mark for removal instead of removing immediately
+        circlesToRemove.push(i)
       }
     })
+    
+    // Remove circles that went out of bounds (iterate backwards to maintain indices)
+    for (let i = circlesToRemove.length - 1; i >= 0; i--) {
+      const indexToRemove = circlesToRemove[i]
+      circles.current.splice(indexToRemove, 1)
+      const newCircle = circleParams()
+      drawCircle(newCircle)
+    }
+    
     animationFrameRef.current = window.requestAnimationFrame(animate)
-  }
+  }, [circleParams, drawCircle])
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -222,7 +239,7 @@ export function ParticlesBackground({
         animationFrameRef.current = null
       }
     }
-  }, [initCanvas])
+  }, [initCanvas, animate])
 
   useEffect(() => {
     initCanvas()

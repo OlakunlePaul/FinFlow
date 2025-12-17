@@ -56,8 +56,8 @@ const RippleButton = React.forwardRef<HTMLButtonElement, RippleButtonProps>(
             key={ripple.id}
             className="absolute rounded-full animate-ripple pointer-events-none"
             style={{
-              left: ripple.x,
-              top: ripple.y,
+              left: `${ripple.x}px`,
+              top: `${ripple.y}px`,
               backgroundColor: rippleColor,
               transform: "translate(-50%, -50%)",
             }}

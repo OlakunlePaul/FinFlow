@@ -102,14 +102,14 @@ const config = {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        hero: ["2.5rem", { lineHeight: "1.2", fontWeight: "700" }],
-        h1: ["2rem", { lineHeight: "1.2", fontWeight: "700" }],
-        h2: ["1.5rem", { lineHeight: "1.2", fontWeight: "600" }],
-        h3: ["1.25rem", { lineHeight: "1.2", fontWeight: "600" }],
-        "body-lg": ["1.125rem", { lineHeight: "1.6", fontWeight: "400" }],
-        body: ["1rem", { lineHeight: "1.6", fontWeight: "400" }],
-        small: ["0.875rem", { lineHeight: "1.4", fontWeight: "400" }],
-        tiny: ["0.75rem", { lineHeight: "1.4", fontWeight: "500" }],
+        hero: ["clamp(2.5rem, 5vw, 4rem)", { lineHeight: "1.1", fontWeight: "700", letterSpacing: "-0.02em" }],
+        h1: ["2rem", { lineHeight: "1.2", fontWeight: "700", letterSpacing: "-0.01em" }],
+        h2: ["1.5rem", { lineHeight: "1.3", fontWeight: "600", letterSpacing: "-0.01em" }],
+        h3: ["1.25rem", { lineHeight: "1.4", fontWeight: "600", letterSpacing: "-0.005em" }],
+        "body-lg": ["1.125rem", { lineHeight: "1.65", fontWeight: "400" }],
+        body: ["1rem", { lineHeight: "1.65", fontWeight: "400" }],
+        small: ["0.875rem", { lineHeight: "1.5", fontWeight: "400" }],
+        tiny: ["0.75rem", { lineHeight: "1.5", fontWeight: "500", letterSpacing: "0.01em" }],
       },
       transitionDuration: {
         fast: motion.duration.fast,
@@ -119,8 +119,12 @@ const config = {
         standard: motion.easing.standard,
       },
       boxShadow: {
-        sm: "0 1px 2px 0 rgba(15, 23, 42, 0.03)",
-        md: "0 4px 10px rgba(15, 23, 42, 0.08)",
+        sm: "0 1px 2px 0 rgba(15, 23, 42, 0.04)",
+        md: "0 4px 12px rgba(15, 23, 42, 0.08)",
+        lg: "0 8px 24px rgba(15, 23, 42, 0.12)",
+        xl: "0 12px 32px rgba(15, 23, 42, 0.16)",
+        "card-subtle": "0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.1)",
+        "card-elevated": "0 4px 6px rgba(15, 23, 42, 0.05), 0 2px 4px rgba(15, 23, 42, 0.06)",
       },
       keyframes: {
         "accordion-down": {
