@@ -147,27 +147,6 @@ export function ParticlesBackground({
     drawParticles()
   }, [drawParticles])
 
-  useEffect(() => {
-    if (canvasRef.current) {
-      context.current = canvasRef.current.getContext("2d")
-    }
-    initCanvas()
-    animate()
-    window.addEventListener("resize", initCanvas)
-
-    return () => {
-      window.removeEventListener("resize", initCanvas)
-      if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current)
-        animationFrameRef.current = null
-      }
-    }
-  }, [initCanvas])
-
-  useEffect(() => {
-    initCanvas()
-  }, [refresh, initCanvas])
-
   const remapValue = (
     value: number,
     start1: number,
@@ -227,6 +206,27 @@ export function ParticlesBackground({
     })
     animationFrameRef.current = window.requestAnimationFrame(animate)
   }
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      context.current = canvasRef.current.getContext("2d")
+    }
+    initCanvas()
+    animate()
+    window.addEventListener("resize", initCanvas)
+
+    return () => {
+      window.removeEventListener("resize", initCanvas)
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current)
+        animationFrameRef.current = null
+      }
+    }
+  }, [initCanvas])
+
+  useEffect(() => {
+    initCanvas()
+  }, [refresh, initCanvas])
 
   return (
     <div
