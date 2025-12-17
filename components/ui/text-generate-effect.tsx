@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 
 interface TextGenerateEffectProps {
@@ -21,14 +21,12 @@ export function TextGenerateEffect({
   const [displayedText, setDisplayedText] = useState("")
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
-  const startTimeRef = useRef<number | null>(null)
 
   useEffect(() => {
     // Reset when words change
     setDisplayedText("")
     setCurrentIndex(0)
     setIsComplete(false)
-    startTimeRef.current = null
   }, [words])
 
   useEffect(() => {
@@ -37,21 +35,14 @@ export function TextGenerateEffect({
       return
     }
 
-    // Track when animation started
-    if (startTimeRef.current === null) {
-      startTimeRef.current = performance.now()
-    }
-
-    // Calculate absolute time from start: each character appears at delay + (index * duration)
-    // This ensures equal spacing between characters regardless of when the effect runs
-    const elapsed = performance.now() - startTimeRef.current
-    const targetTime = delay + duration * currentIndex
-    const remainingDelay = Math.max(0, targetTime - elapsed)
+    // Use constant delay between characters: first character after initial delay,
+    // subsequent characters after duration ms each
+    const timeoutDelay = currentIndex === 0 ? delay : duration
 
     const timeout = setTimeout(() => {
       setDisplayedText(words.slice(0, currentIndex + 1))
       setCurrentIndex(currentIndex + 1)
-    }, remainingDelay)
+    }, timeoutDelay)
 
     return () => clearTimeout(timeout)
   }, [currentIndex, words, duration, delay])
