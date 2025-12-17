@@ -20,22 +20,34 @@ export function NumberTicker({
   locale = "en-US",
   decimals = 2,
 }: NumberTickerProps) {
-  const [displayValue, setDisplayValue] = useState(0)
+  const [displayValue, setDisplayValue] = useState(value)
   const [isAnimating, setIsAnimating] = useState(false)
   const startTimeRef = useRef<number | null>(null)
   const animationFrameRef = useRef<number | null>(null)
-  const hasAnimatedRef = useRef(false)
+  const previousValueRef = useRef(value)
+  const displayValueRef = useRef(value)
+
+  // Keep displayValueRef in sync with displayValue
+  useEffect(() => {
+    displayValueRef.current = displayValue
+  }, [displayValue])
 
   useEffect(() => {
-    // Only animate on mount (from 0 to value)
-    if (hasAnimatedRef.current) {
-      setDisplayValue(value)
+    // If value hasn't changed, no need to animate
+    if (previousValueRef.current === value) {
       return
+    }
+
+    // Cancel any ongoing animation
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current)
+      animationFrameRef.current = null
     }
 
     setIsAnimating(true)
     const startTime = performance.now()
-    const startValue = 0
+    // Use current displayed value as start (in case animation was interrupted)
+    const startValue = displayValueRef.current
     const endValue = value
 
     const animate = (currentTime: number) => {
@@ -56,7 +68,7 @@ export function NumberTicker({
         animationFrameRef.current = requestAnimationFrame(animate)
       } else {
         setIsAnimating(false)
-        hasAnimatedRef.current = true
+        previousValueRef.current = value
         startTimeRef.current = null
       }
     }
@@ -68,6 +80,8 @@ export function NumberTicker({
         cancelAnimationFrame(animationFrameRef.current)
         animationFrameRef.current = null
       }
+      // Update previous value to current displayed value when animation is cancelled
+      previousValueRef.current = displayValueRef.current
     }
   }, [value, duration])
 

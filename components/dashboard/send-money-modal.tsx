@@ -110,14 +110,17 @@ export function SendMoneyModal({
       queryClient.invalidateQueries({ queryKey: ["transactions"] })
       queryClient.invalidateQueries({ queryKey: ["balance"] })
 
-      // Show success modal instead of toast
-      setSuccessData({ amount: data.amount, recipient: data.recipient })
-      setShowSuccessModal(true)
-
+      // Close the main modal first, then show success modal
       reset()
       onOpenChange(false)
       setStep("form")
       setReviewData(null)
+
+      // Show success modal after a brief delay to ensure parent modal is closed
+      setTimeout(() => {
+        setSuccessData({ amount: data.amount, recipient: data.recipient })
+        setShowSuccessModal(true)
+      }, 100)
     } catch (error: any) {
       toast({
         title: "Error",
@@ -130,7 +133,8 @@ export function SendMoneyModal({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-h3 text-dark-blue">Send Money</DialogTitle>
@@ -272,8 +276,9 @@ export function SendMoneyModal({
           </div>
         )}
       </DialogContent>
+      </Dialog>
 
-      {/* Success Modal */}
+      {/* Success Modal - rendered outside Dialog to persist after parent closes */}
       {successData && (
         <SuccessModal
           open={showSuccessModal}
@@ -290,6 +295,6 @@ export function SendMoneyModal({
           recipient={successData.recipient}
         />
       )}
-    </Dialog>
+    </>
   )
 }
