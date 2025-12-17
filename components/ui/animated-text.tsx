@@ -22,11 +22,11 @@ export function AnimatedText({
   const words = children.split(" ")
 
   if (prefersReducedMotion) {
-    return <span className={cn(className)}>{children}</span>
+    return <span className={cn(className)} suppressHydrationWarning>{children}</span>
   }
 
   return (
-    <span className={cn("inline-block", className)}>
+    <span className={cn("inline-block", className)} suppressHydrationWarning>
       {words.map((word, index) => (
         <motion.span
           key={`${word}-${index}`}

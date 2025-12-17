@@ -15,8 +15,12 @@ export const physics = {
 // Hook to check for reduced motion preference
 export function useReducedMotion(): boolean {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    // Mark as mounted to prevent hydration mismatches
+    setIsMounted(true)
+
     // Check if window is available (client-side)
     if (typeof window === "undefined") return
 
@@ -41,6 +45,8 @@ export function useReducedMotion(): boolean {
     }
   }, [])
 
-  return prefersReducedMotion
+  // Return false during SSR and initial render to prevent hydration mismatches
+  // After mount, return the actual preference
+  return isMounted ? prefersReducedMotion : false
 }
 
