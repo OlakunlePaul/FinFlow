@@ -28,8 +28,8 @@ export function AnimatedText({
   }, [])
 
   // Always render the same structure to prevent hydration mismatches
-  // During SSR and first client render, always use animated structure
-  // After mount, conditionally disable animations based on preference
+  // Keep initial prop consistent to avoid animation restart during hydration
+  // Control animation behavior through animate and transition props instead
   const shouldAnimate = !isMounted || !prefersReducedMotion
 
   return (
@@ -37,8 +37,10 @@ export function AnimatedText({
       {words.map((word, index) => (
         <motion.span
           key={`${word}-${index}`}
-          initial={shouldAnimate ? { opacity: 0, y: initialY } : { opacity: 1, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
+          // Always use the same initial value to prevent animation restart during hydration
+          initial={{ opacity: 0, y: initialY }}
+          // Control animation through animate prop: if reduced motion, animate to final state immediately
+          animate={shouldAnimate ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
           transition={
             shouldAnimate
               ? {
