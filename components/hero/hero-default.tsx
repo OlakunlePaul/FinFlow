@@ -54,11 +54,11 @@ export function HeroDefault() {
       {/* Hero Visual - Subtle Virtual Card */}
       <motion.div
         {...fadeInUp}
-        transition={{ delay: 0.2, duration: 0.6, ease: easing }}
+        transition={{ delay: 0.2, duration: 0.5, ease: easing }}
         className="mt-16 flex justify-center"
       >
         <div className="relative w-full max-w-2xl">
-          <div className="relative rounded-2xl border border-border-subtle bg-gradient-to-br from-surface-base to-white p-8 shadow-lg">
+          <div className="relative rounded-2xl border border-border-subtle bg-gradient-to-br from-surface-base to-white p-8 shadow-lg transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5">
             {/* Subtle glassy card mock */}
             <div className="relative mx-auto max-w-sm">
               <div className="rounded-xl border border-border-subtle/50 bg-white/60 p-6 backdrop-blur-sm shadow-md">

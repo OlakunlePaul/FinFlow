@@ -54,17 +54,17 @@ export function HeroBrand() {
       {/* Brand-focused visual */}
       <motion.div
         {...fadeInUp}
-        transition={{ delay: 0.2, duration: 0.6, ease: easing }}
+        transition={{ delay: 0.2, duration: 0.5, ease: easing }}
         className="mt-16 flex justify-center"
       >
         <div className="relative w-full max-w-2xl">
-          <div className="relative rounded-2xl border border-border-subtle bg-gradient-to-br from-surface-base to-white p-12 shadow-lg">
+          <div className="relative rounded-2xl border border-border-subtle bg-gradient-to-br from-surface-base to-white p-12 shadow-lg transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5">
             <div className="flex flex-col items-center gap-6 text-center">
-              <div className="flex items-center gap-2">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-accent" />
-                <span className="text-2xl font-bold text-text-strong">FinFlow</span>
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-accent shadow-md" />
+                <span className="text-2xl font-bold tracking-tight text-text-strong">FinFlow</span>
               </div>
-              <p className="max-w-md text-text-muted">
+              <p className="max-w-md text-text-muted leading-relaxed">
                 Empowering businesses to build, scale, and innovate with confidence
               </p>
             </div>

@@ -64,14 +64,14 @@ export function HeroConversion() {
       {/* Conversion-focused visual */}
       <motion.div
         {...fadeInUp}
-        transition={{ delay: 0.2, duration: 0.6, ease: easing }}
+        transition={{ delay: 0.2, duration: 0.5, ease: easing }}
         className="mt-16 flex justify-center"
       >
         <div className="relative w-full max-w-2xl">
-          <div className="relative rounded-2xl border border-border-subtle bg-gradient-to-br from-primary/5 to-accent/5 p-8 shadow-lg">
+          <div className="relative rounded-2xl border border-border-subtle bg-gradient-to-br from-primary/5 to-accent/5 p-8 shadow-lg transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5">
             <div className="grid gap-4 sm:grid-cols-3">
               {["$0", "2.9%", "24/7"].map((stat, i) => (
-                <div key={i} className="rounded-lg border border-border-subtle bg-white/60 p-6 text-center backdrop-blur-sm">
+                <div key={i} className="rounded-lg border border-border-subtle bg-white/60 p-6 text-center backdrop-blur-sm transition-all duration-200 hover:bg-white/80 hover:shadow-sm">
                   <div className="text-2xl font-bold text-text-strong">{stat}</div>
                   <div className="mt-1 text-xs text-text-muted">
                     {i === 0 ? "Setup fee" : i === 1 ? "Transaction fee" : "Support"}

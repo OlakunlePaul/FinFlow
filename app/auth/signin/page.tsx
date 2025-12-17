@@ -28,6 +28,8 @@ export default function SignInPage() {
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [emailFocused, setEmailFocused] = useState(false)
+  const [passwordFocused, setPasswordFocused] = useState(false)
 
   const {
     register,
@@ -115,14 +117,17 @@ export default function SignInPage() {
                 <div className="relative">
                   <Mail className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-text-muted" />
                   <motion.div
-                    whileFocus={{ scale: 1.01 }}
+                    animate={{ scale: emailFocused ? 1.01 : 1 }}
                     transition={{ duration: 0.2 }}
+                    className="relative"
                   >
                     <Input
                       id="email"
                       type="email"
                       placeholder="you@example.com"
                       {...register("email")}
+                      onFocus={() => setEmailFocused(true)}
+                      onBlur={() => setEmailFocused(false)}
                       className={`h-12 pl-11 pr-4 ${
                         errors.email 
                           ? "border-destructive focus-visible:ring-destructive/20" 
@@ -157,14 +162,17 @@ export default function SignInPage() {
                 <div className="relative">
                   <Lock className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-text-muted" />
                   <motion.div
-                    whileFocus={{ scale: 1.01 }}
+                    animate={{ scale: passwordFocused ? 1.01 : 1 }}
                     transition={{ duration: 0.2 }}
+                    className="relative"
                   >
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
                       {...register("password")}
+                      onFocus={() => setPasswordFocused(true)}
+                      onBlur={() => setPasswordFocused(false)}
                       className={`h-12 pl-11 pr-12 ${
                         errors.password 
                           ? "border-destructive focus-visible:ring-destructive/20" 
