@@ -12,9 +12,11 @@ import { HeroVariantSwitcher, type HeroVariant } from "./hero-variant-switcher"
 import { useHeroAnalytics } from "@/hooks/use-hero-analytics"
 import { HeroAnalyticsContext } from "./hero-analytics-context"
 
+const easing = [0.4, 0, 0.2, 1] as const
+
 const fadeTransition = {
   duration: 0.3,
-  ease: [0.4, 0, 0.2, 1],
+  ease: easing,
 }
 
 const VALID_VARIANTS: HeroVariant[] = ["default", "conversion", "brand", "dev"]
