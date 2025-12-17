@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
@@ -45,7 +46,9 @@ export default function HomePage() {
 
       <main className="flex flex-1 flex-col">
         {/* Hero Section */}
-        <HeroSection />
+        <Suspense fallback={<div className="h-[600px] bg-white" />}>
+          <HeroSection />
+        </Suspense>
 
         {/* Dashboard Preview Section */}
         <section className="bg-slate-50 px-6 py-20 lg:py-32">

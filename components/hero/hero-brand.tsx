@@ -4,6 +4,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Star } from "lucide-react"
+import { useHeroAnalyticsContext } from "./hero-analytics-context"
 
 const easing = [0.4, 0, 0.2, 1] as const
 
@@ -14,6 +15,8 @@ const fadeInUp = {
 }
 
 export function HeroBrand() {
+  const { trackCTA } = useHeroAnalyticsContext()
+
   return (
     <>
       <motion.div
@@ -34,13 +37,13 @@ export function HeroBrand() {
         </p>
         
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link href="/signup">
+          <Link href="/signup" onClick={() => trackCTA("primary", "Explore Platform")}>
             <Button size="lg" className="bg-primary text-text-on-primary hover:bg-primary/90">
               Explore Platform
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
-          <Link href="/auth/signin">
+          <Link href="/auth/signin" onClick={() => trackCTA("secondary", "Learn More")}>
             <Button size="lg" variant="outline" className="border-border-subtle text-text-strong hover:bg-surface-base">
               Learn More
             </Button>
