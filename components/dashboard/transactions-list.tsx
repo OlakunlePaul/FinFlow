@@ -222,6 +222,11 @@ export function TransactionsList({ onAddMoney }: { onAddMoney?: () => void } = {
                 <div
                   key={txn.id}
                   className="stagger-item flex items-center gap-4 rounded-lg border border-border-subtle bg-surface-base px-4 py-3 transition-fast ease-standard hover:bg-surface-raised"
+                  style={
+                    {
+                      "--stagger-delay": `${Math.min(index * 0.05, 0.5)}s`,
+                    } as React.CSSProperties
+                  }
                 >
                   <div
                     className={`flex h-9 w-9 items-center justify-center rounded-full border text-sm ${
