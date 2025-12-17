@@ -18,7 +18,7 @@ import { SuccessModal } from "@/components/ui/success-modal"
 import { useWalletStore } from "@/lib/store/wallet-store"
 import { useQueryClient } from "@tanstack/react-query"
 import { useToast } from "@/components/ui/use-toast"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { sanitizeInput } from "@/lib/utils"
 import { AlertTriangle } from "lucide-react"
 
@@ -45,6 +45,16 @@ export function SendMoneyModal({
   const [reviewData, setReviewData] = useState<TransferForm | null>(null)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [successData, setSuccessData] = useState<{ amount: number; recipient: string } | null>(null)
+
+  // Reset success state when the main modal closes
+  useEffect(() => {
+    if (!open) {
+      setShowSuccessModal(false)
+      setSuccessData(null)
+      setStep("form")
+      setReviewData(null)
+    }
+  }, [open])
 
   const {
     register,
@@ -252,22 +262,6 @@ export function SendMoneyModal({
               >
                 Back
               </Button>
-              {/* Standard submit button - commented out in favor of SlideToSubmit */}
-              {/* <Button
-                type="button"
-                disabled={isSubmitting}
-                onClick={() => reviewData && executeTransfer(reviewData)}
-                className="w-full rounded-lg bg-gradient-to-r from-dark-blue to-dark-blue-light text-white sm:w-auto"
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                    Sending...
-                  </>
-                ) : (
-                  "Send Money"
-                )}
-              </Button> */}
               <SlideToSubmit
                 onSubmit={() => reviewData && executeTransfer(reviewData)}
                 disabled={isSubmitting}
@@ -283,7 +277,13 @@ export function SendMoneyModal({
       {successData && (
         <SuccessModal
           open={showSuccessModal}
-          onOpenChange={setShowSuccessModal}
+          onOpenChange={(isOpen) => {
+            setShowSuccessModal(isOpen)
+            // Reset success data when the success modal closes
+            if (!isOpen) {
+              setSuccessData(null)
+            }
+          }}
           title="Transaction Successful!"
           description="Your money has been sent successfully."
           amount={successData.amount}
