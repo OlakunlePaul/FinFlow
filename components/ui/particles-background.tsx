@@ -35,12 +35,16 @@ export function ParticlesBackground({
   const quantityRef = useRef(quantity)
   const sizeRef = useRef(size)
   const colorRef = useRef(color)
+  const staticityRef = useRef(staticity)
+  const easeRef = useRef(ease)
   
   useEffect(() => {
     quantityRef.current = quantity
     sizeRef.current = size
     colorRef.current = color
-  }, [quantity, size, color])
+    staticityRef.current = staticity
+    easeRef.current = ease
+  }, [quantity, size, color, staticity, ease])
 
   type Circle = {
     x: number
@@ -200,13 +204,13 @@ export function ParticlesBackground({
       circle.x += circle.dx
       circle.y += circle.dy
       circle.translateX +=
-        (mousePosition.current.x / (staticity / circle.magnetism) -
+        (mousePosition.current.x / (staticityRef.current / circle.magnetism) -
           circle.translateX) /
-        ease
+        easeRef.current
       circle.translateY +=
-        (mousePosition.current.y / (staticity / circle.magnetism) -
+        (mousePosition.current.y / (staticityRef.current / circle.magnetism) -
           circle.translateY) /
-        ease
+        easeRef.current
 
       drawCircle(circle, true)
 
