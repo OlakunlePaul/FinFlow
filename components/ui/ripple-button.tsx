@@ -14,6 +14,7 @@ const RippleButton = React.forwardRef<HTMLButtonElement, RippleButtonProps>(
       Array<{ x: number; y: number; id: number }>
     >([])
     const buttonRef = React.useRef<HTMLButtonElement>(null)
+    const rippleIdCounter = React.useRef(0)
 
     React.useImperativeHandle(ref, () => buttonRef.current!)
 
@@ -24,16 +25,19 @@ const RippleButton = React.forwardRef<HTMLButtonElement, RippleButtonProps>(
       const x = e.clientX - rect.left
       const y = e.clientY - rect.top
 
+      // Use a counter to ensure unique IDs even for simultaneous clicks
+      const rippleId = ++rippleIdCounter.current
+
       const newRipple = {
         x,
         y,
-        id: Date.now(),
+        id: rippleId,
       }
 
       setRipples((prev) => [...prev, newRipple])
 
       setTimeout(() => {
-        setRipples((prev) => prev.filter((ripple) => ripple.id !== newRipple.id))
+        setRipples((prev) => prev.filter((ripple) => ripple.id !== rippleId))
       }, 600)
 
       props.onClick?.(e)
