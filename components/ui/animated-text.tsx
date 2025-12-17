@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ReactNode } from "react"
+import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { springPresets, useReducedMotion } from "@/lib/hooks/use-motion-config"
 
@@ -19,24 +19,35 @@ export function AnimatedText({
   initialY = 20,
 }: AnimatedTextProps) {
   const prefersReducedMotion = useReducedMotion()
+  const [isMounted, setIsMounted] = useState(false)
   const words = children.split(" ")
 
-  if (prefersReducedMotion) {
-    return <span className={cn(className)} suppressHydrationWarning>{children}</span>
-  }
+  // Track mount state to ensure consistent hydration
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  // Always render the same structure to prevent hydration mismatches
+  // During SSR and first client render, always use animated structure
+  // After mount, conditionally disable animations based on preference
+  const shouldAnimate = !isMounted || !prefersReducedMotion
 
   return (
     <span className={cn("inline-block", className)} suppressHydrationWarning>
       {words.map((word, index) => (
         <motion.span
           key={`${word}-${index}`}
-          initial={{ opacity: 0, y: initialY }}
+          initial={shouldAnimate ? { opacity: 0, y: initialY } : { opacity: 1, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{
-            type: "spring",
-            ...springPresets.gentle,
-            delay: index * staggerDelay,
-          }}
+          transition={
+            shouldAnimate
+              ? {
+                  type: "spring",
+                  ...springPresets.gentle,
+                  delay: index * staggerDelay,
+                }
+              : { duration: 0 }
+          }
           className="inline-block"
         >
           {word}
