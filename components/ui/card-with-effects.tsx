@@ -88,7 +88,7 @@ export function CardWithEffects({
       }}
       className={cn("relative", className)}
     >
-      <Card {...cardProps} className={cn("relative overflow-hidden", cardProps.className)}>
+      <Card {...cardProps} className={cn("relative overflow-hidden", className)}>
         {/* Sheen effect for mobile */}
         {isMobile && hasSheenPlayed && (
           <motion.div

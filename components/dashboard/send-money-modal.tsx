@@ -18,7 +18,7 @@ import { SuccessModal } from "@/components/ui/success-modal"
 import { useWalletStore } from "@/lib/store/wallet-store"
 import { useQueryClient } from "@tanstack/react-query"
 import { useToast } from "@/components/ui/use-toast"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { sanitizeInput } from "@/lib/utils"
 import { AlertTriangle } from "lucide-react"
 
@@ -45,16 +45,32 @@ export function SendMoneyModal({
   const [reviewData, setReviewData] = useState<TransferForm | null>(null)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [successData, setSuccessData] = useState<{ amount: number; recipient: string } | null>(null)
+  const successModalTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Reset success state when the main modal closes
   useEffect(() => {
     if (!open) {
+      // Clear any pending timeout when modal closes
+      if (successModalTimeoutRef.current) {
+        clearTimeout(successModalTimeoutRef.current)
+        successModalTimeoutRef.current = null
+      }
       setShowSuccessModal(false)
       setSuccessData(null)
       setStep("form")
       setReviewData(null)
     }
   }, [open])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (successModalTimeoutRef.current) {
+        clearTimeout(successModalTimeoutRef.current)
+        successModalTimeoutRef.current = null
+      }
+    }
+  }, [])
 
   const {
     register,
@@ -116,10 +132,16 @@ export function SendMoneyModal({
       setStep("form")
       setReviewData(null)
 
+      // Clear any existing timeout before setting a new one
+      if (successModalTimeoutRef.current) {
+        clearTimeout(successModalTimeoutRef.current)
+      }
+
       // Show success modal after a brief delay to ensure parent modal is closed
-      setTimeout(() => {
+      successModalTimeoutRef.current = setTimeout(() => {
         setSuccessData({ amount: data.amount, recipient: data.recipient })
         setShowSuccessModal(true)
+        successModalTimeoutRef.current = null
       }, 100)
     } catch (error: any) {
       toast({
