@@ -161,6 +161,9 @@ export function ParticlesBackground({
 
   const animate = useCallback(() => {
     clearContext()
+    // Collect circles to remove instead of mutating during iteration
+    const circlesToRemove: number[] = []
+    
     circles.current.forEach((circle: Circle, i: number) => {
       const edge = [
         circle.x + circle.translateX - circle.size,
@@ -199,11 +202,19 @@ export function ParticlesBackground({
         circle.y < -circle.size ||
         circle.y > canvasSize.current.h + circle.size
       ) {
-        circles.current.splice(i, 1)
-        const newCircle = circleParams()
-        drawCircle(newCircle)
+        // Mark for removal instead of removing immediately
+        circlesToRemove.push(i)
       }
     })
+    
+    // Remove circles that went out of bounds (iterate backwards to maintain indices)
+    for (let i = circlesToRemove.length - 1; i >= 0; i--) {
+      const indexToRemove = circlesToRemove[i]
+      circles.current.splice(indexToRemove, 1)
+      const newCircle = circleParams()
+      drawCircle(newCircle)
+    }
+    
     animationFrameRef.current = window.requestAnimationFrame(animate)
   }, [circleParams, drawCircle])
 

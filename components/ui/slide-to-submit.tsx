@@ -41,12 +41,34 @@ export function SlideToSubmit({
       if (!trackRef.current || !knobRef.current) return
       const trackWidth = trackRef.current.offsetWidth
       const knobWidth = knobRef.current.offsetWidth
-      setMaxX(trackWidth - knobWidth)
+      // Only update if we have valid dimensions
+      if (trackWidth > 0 && knobWidth > 0) {
+        setMaxX(trackWidth - knobWidth)
+      }
     }
     
+    // Initial calculation
     updateConstraints()
+    
+    // Use ResizeObserver to detect layout changes
+    const resizeObserver = new ResizeObserver(() => {
+      updateConstraints()
+    })
+    
+    if (trackRef.current) {
+      resizeObserver.observe(trackRef.current)
+    }
+    if (knobRef.current) {
+      resizeObserver.observe(knobRef.current)
+    }
+    
+    // Also listen to window resize as fallback
     window.addEventListener("resize", updateConstraints)
-    return () => window.removeEventListener("resize", updateConstraints)
+    
+    return () => {
+      resizeObserver.disconnect()
+      window.removeEventListener("resize", updateConstraints)
+    }
   }, [])
 
   // Calculate progress percentage
