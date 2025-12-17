@@ -26,6 +26,7 @@ export function CountingNumber({
   const startTimeRef = useRef<number | null>(null)
   const animationFrameRef = useRef<number | null>(null)
   const displayValueRef = useRef(value)
+  const isInitialMountRef = useRef(true)
 
   // Keep displayValueRef in sync with displayValue
   useEffect(() => {
@@ -33,6 +34,16 @@ export function CountingNumber({
   }, [displayValue])
 
   useEffect(() => {
+    // On initial mount, just set the value without animation
+    if (isInitialMountRef.current) {
+      isInitialMountRef.current = false
+      setDisplayValue(value)
+      displayValueRef.current = value
+      startValueRef.current = value
+      return
+    }
+
+    // If value hasn't changed, no need to animate
     if (startValueRef.current === value) {
       setDisplayValue(value)
       displayValueRef.current = value

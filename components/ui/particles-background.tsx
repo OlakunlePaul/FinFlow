@@ -97,7 +97,16 @@ export function ParticlesBackground({
       context.current.translate(translateX, translateY)
       context.current.beginPath()
       context.current.arc(x, y, size, 0, 2 * Math.PI)
-      context.current.fillStyle = colorRef.current.replace("0.1", String(alpha))
+      
+      // Replace the opacity value in the rgba color string
+      // Handles formats like "rgba(255, 255, 255, 0.1)" or "rgba(255, 255, 255, 0.15)"
+      const colorWithAlpha = colorRef.current.replace(
+        /rgba?\((\d+,\s*\d+,\s*\d+),\s*[\d.]+\)/,
+        (match, rgbValues) => {
+          return `rgba(${rgbValues}, ${alpha})`
+        }
+      )
+      context.current.fillStyle = colorWithAlpha
       context.current.fill()
       context.current.setTransform(dpr, 0, 0, dpr, 0, 0)
 
