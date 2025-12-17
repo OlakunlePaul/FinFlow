@@ -86,7 +86,7 @@ export function CardWithEffects({
         transformStyle: "preserve-3d",
         perspective: "1000px",
       }}
-      className={cn("relative", className)}
+      className="relative"
     >
       <Card {...cardProps} className={cn("relative overflow-hidden", className)}>
         {/* Sheen effect for mobile */}

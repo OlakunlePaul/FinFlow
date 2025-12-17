@@ -9,7 +9,7 @@ interface MagneticButtonProps extends ButtonProps {
 }
 
 const MagneticButton = React.forwardRef<HTMLButtonElement, MagneticButtonProps>(
-  ({ className, magneticStrength = 0.3, ...props }, ref) => {
+  ({ className, magneticStrength = 0.3, style, ...props }, ref) => {
     const buttonRef = React.useRef<HTMLButtonElement>(null)
     const [position, setPosition] = React.useState({ x: 0, y: 0 })
 
@@ -38,6 +38,7 @@ const MagneticButton = React.forwardRef<HTMLButtonElement, MagneticButtonProps>(
         ref={buttonRef}
         className={cn("transition-transform duration-200 ease-out", className)}
         style={{
+          ...style,
           transform: `translate(${position.x}px, ${position.y}px)`,
         }}
         onMouseMove={handleMouseMove}
