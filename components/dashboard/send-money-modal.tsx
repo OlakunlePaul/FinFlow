@@ -164,11 +164,14 @@ export function SendMoneyModal({
         clearTimeout(successModalTimeoutRef.current)
         successModalTimeoutRef.current = null
       }
-      toast({
-        title: "Error",
-        description: error.message || "Failed to send money",
-        variant: "destructive",
-      })
+      // Skip showing toast for balance validation errors since we already showed it
+      if (error.message !== "Insufficient Balance") {
+        toast({
+          title: "Error",
+          description: error.message || "Failed to send money",
+          variant: "destructive",
+        })
+      }
       // Re-throw error so SlideToSubmit can catch it and reset
       throw error
     } finally {
