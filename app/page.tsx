@@ -75,7 +75,7 @@ export default function HomePage() {
                 words="One global account for work and life money"
                 className="text-text-on-primary"
                 cursorClassName="bg-text-on-primary"
-                duration={20}
+                duration={10}
               />
             </h1>
             <p className="mt-4 text-body-lg text-light-blue">
