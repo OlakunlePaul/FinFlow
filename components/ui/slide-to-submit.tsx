@@ -101,6 +101,15 @@ export function SlideToSubmit({
   const handlePanEnd = () => {
     if (disabled || isCompleted || isLoading) return
     
+    // Guard against maxX being 0 (before layout dimensions are calculated)
+    if (maxX <= 0) {
+      // Reset to start if dimensions aren't ready yet
+      x.set(0)
+      setIsDragging(false)
+      startXRef.current = 0
+      return
+    }
+    
     const currentX = x.get()
     const threshold = maxX * 0.9 // 90% threshold
     
