@@ -4,9 +4,9 @@ import { motion, useMotionValue, useSpring } from "framer-motion"
 import { ReactNode, useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 import { springPresets } from "@/lib/hooks/use-motion-config"
-import { Card, CardProps } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 
-interface CardWithEffectsProps extends CardProps {
+interface CardWithEffectsProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode
   className?: string
 }
