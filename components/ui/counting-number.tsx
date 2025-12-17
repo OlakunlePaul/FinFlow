@@ -94,10 +94,10 @@ export function CountingNumber({
   }, [value, duration])
 
   const formatValue = (num: number) => {
-    if (decimals === 0) {
-      return Math.round(num).toLocaleString()
-    }
-    return num.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    return new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    }).format(num)
   }
 
   return (

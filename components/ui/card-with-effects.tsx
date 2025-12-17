@@ -36,14 +36,6 @@ export function CardWithEffects({
     return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
-  useEffect(() => {
-    // Play sheen effect once on mobile load
-    if (isMobile && !hasSheenPlayed) {
-      const timer = setTimeout(() => setHasSheenPlayed(true), 100)
-      return () => clearTimeout(timer)
-    }
-  }, [isMobile, hasSheenPlayed])
-
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isMobile || !cardRef.current) return
 
@@ -89,8 +81,8 @@ export function CardWithEffects({
       className="relative"
     >
       <Card {...cardProps} className={cn("relative overflow-hidden", className)}>
-        {/* Sheen effect for mobile */}
-        {isMobile && hasSheenPlayed && (
+        {/* Sheen effect for mobile - plays once on load */}
+        {isMobile && !hasSheenPlayed && (
           <motion.div
             className="absolute inset-0 z-10 pointer-events-none"
             initial={{ x: "-100%" }}
@@ -98,6 +90,9 @@ export function CardWithEffects({
             transition={{
               duration: 1.5,
               ease: "easeInOut",
+            }}
+            onAnimationComplete={() => {
+              setHasSheenPlayed(true)
             }}
             style={{
               background: "linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%)",
