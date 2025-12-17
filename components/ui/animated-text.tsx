@@ -30,7 +30,8 @@ export function AnimatedText({
   // Always render the same structure to prevent hydration mismatches
   // Keep initial prop consistent to avoid animation restart during hydration
   // Control animation behavior through transition prop (duration: 0 for reduced motion)
-  const shouldAnimate = !isMounted || !prefersReducedMotion
+  // Only animate when mounted AND user hasn't requested reduced motion
+  const shouldAnimate = isMounted && !prefersReducedMotion
 
   return (
     <span className={cn("inline-block", className)} suppressHydrationWarning>

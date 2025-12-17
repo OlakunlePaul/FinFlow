@@ -1,9 +1,11 @@
 "use client"
 
+import { Suspense } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Check, Code, Shield, Zap, Globe, Plus, Send, Download } from "lucide-react"
+import { HeroSection } from "@/components/hero/hero-section"
 
 const easing = [0.4, 0, 0.2, 1] as const
 
@@ -18,7 +20,7 @@ const jsonPayload = `{` + `"amount": 1000, "currency": "USD"` + `}`
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="relative flex min-h-screen flex-col bg-white overflow-hidden">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border-subtle bg-white/80 backdrop-blur-sm">
         <div className="container flex items-center justify-between px-6 py-4">
@@ -43,71 +45,10 @@ export default function HomePage() {
       </header>
 
       <main className="flex flex-1 flex-col">
-      {/* Hero Section */}
-        <section className="relative overflow-hidden bg-white px-6 py-20 lg:py-32">
-          <div className="container mx-auto max-w-6xl">
-            <motion.div
-              {...fadeInUp}
-              className="mx-auto max-w-3xl text-center"
-            >
-              <h1 className="text-4xl font-bold tracking-tight text-text-strong sm:text-5xl lg:text-6xl">
-                Production-ready wallet infrastructure
-            </h1>
-              <p className="mt-6 text-lg leading-relaxed text-text-muted sm:text-xl">
-                Build secure, scalable financial products with enterprise-grade reliability. 
-                Trusted by teams shipping real money features.
-              </p>
-              
-              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Link href="/signup">
-                  <Button size="lg" className="bg-primary text-text-on-primary hover:bg-primary/90">
-                  Get Started
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link href="/auth/signin">
-                  <Button size="lg" variant="outline" className="border-border-subtle text-text-strong hover:bg-surface-base">
-                    View Dashboard
-                  </Button>
-              </Link>
-            </div>
-
-              <p className="mt-6 text-sm text-text-muted">
-                <Shield className="mr-1.5 inline h-4 w-4" />
-                SOC 2 compliant • 256-bit encryption • 99.9% uptime SLA
-              </p>
-            </motion.div>
-
-            {/* Hero Visual - Subtle Virtual Card */}
-            <motion.div
-              {...fadeInUp}
-              transition={{ delay: 0.2, duration: 0.6, ease: easing }}
-              className="mt-16 flex justify-center"
-            >
-              <div className="relative w-full max-w-2xl">
-                <div className="relative rounded-2xl border border-border-subtle bg-gradient-to-br from-surface-base to-white p-8 shadow-lg">
-                  {/* Subtle glassy card mock */}
-                  <div className="relative mx-auto max-w-sm">
-                    <div className="rounded-xl border border-border-subtle/50 bg-white/60 p-6 backdrop-blur-sm shadow-md">
-                      <div className="mb-4 flex items-center justify-between">
-                        <div className="h-8 w-12 rounded bg-gradient-to-br from-primary/20 to-accent/20" />
-                        <div className="h-6 w-6 rounded-full border-2 border-border-subtle" />
-                  </div>
-                      <div className="mt-6 space-y-2">
-                        <div className="h-4 w-32 rounded bg-text-muted/20" />
-                        <div className="h-4 w-24 rounded bg-text-muted/10" />
-                </div>
-                      <div className="mt-6 flex items-center justify-between text-sm text-text-muted">
-                        <span>•••• 1234</span>
-                        <span>12/25</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-            </motion.div>
-        </div>
-      </section>
+        {/* Hero Section */}
+        <Suspense fallback={<div className="h-[600px] bg-white" />}>
+          <HeroSection />
+        </Suspense>
 
         {/* Dashboard Preview Section */}
         <section className="bg-slate-50 px-6 py-20 lg:py-32">
@@ -127,10 +68,10 @@ export default function HomePage() {
 
             <motion.div
               {...fadeInUp}
-              transition={{ delay: 0.2, duration: 0.6, ease: easing }}
+              transition={{ delay: 0.2, duration: 0.5, ease: easing }}
               className="mt-12"
             >
-              <div className="overflow-hidden rounded-xl border border-slate-700/50 bg-slate-900 shadow-2xl">
+              <div className="overflow-hidden rounded-2xl border border-border-subtle bg-slate-900 shadow-xl transition-all duration-200 hover:shadow-2xl">
                 {/* Realistic FinFlow Dashboard Preview */}
                 <div className="bg-surface-base min-h-[600px]">
                   {/* Top Navigation */}
@@ -165,11 +106,11 @@ export default function HomePage() {
                     <div className="mb-6">
                       <h2 className="text-2xl font-bold text-text-strong">
                         Welcome back, <span className="text-primary">John Doe</span>
-            </h2>
+                      </h2>
                       <p className="mt-2 text-sm text-text-muted">
                         Here&apos;s a snapshot of your wallets, cards, and activity.
-            </p>
-          </div>
+                      </p>
+                    </div>
 
                     {/* Balance Card - Gradient */}
                     <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary via-primary to-accent text-white shadow-xl">
@@ -254,7 +195,7 @@ export default function HomePage() {
                               { desc: "USDT to EUR exchange", date: "2 days ago", amount: "+$2,450.00", type: "credit" },
                               { desc: "Subscription payment", date: "3 days ago", amount: "-$29.99", type: "debit" },
                             ].map((txn, i) => (
-                              <div key={i} className="flex items-center gap-4 rounded-lg border border-border-subtle bg-surface-base px-5 py-4 hover:bg-surface-raised transition-colors">
+                              <div key={i} className="flex items-center gap-4 rounded-lg border border-border-subtle bg-surface-base px-5 py-4 transition-all duration-200 hover:bg-surface-raised hover:shadow-sm">
                                 <div className={`flex h-11 w-11 items-center justify-center rounded-lg border-2 ${
                                   txn.type === "credit" 
                                     ? "border-green-200 bg-green-50 text-green-600" 
@@ -264,18 +205,18 @@ export default function HomePage() {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="text-sm font-semibold text-text-strong">{txn.desc}</div>
-                                  <div className="mt-2 flex items-center gap-2 text-xs text-text-muted">
-                                    <span>{txn.date}</span>
+                                  <div className="mt-1.5 text-xs text-text-muted">
+                                    {txn.date}
                                   </div>
                                 </div>
-                                <div className={`text-base font-bold ${
+                                <div className={`text-base font-bold tracking-tight ${
                                   txn.type === "credit" ? "text-green-600" : "text-red-600"
                                 }`}>
                                   {txn.amount}
                                 </div>
-                  </div>
-                ))}
-              </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
 
@@ -349,9 +290,9 @@ export default function HomePage() {
                   key={feature.title}
                   {...fadeInUp}
                   transition={{ delay: 0.1 * index, duration: 0.5, ease: easing }}
-                  className="rounded-xl border border-border-subtle bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md"
+                  className="group rounded-xl border border-border-subtle bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
                 >
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/5">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/5 transition-colors group-hover:bg-primary/10">
                     <feature.icon className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="text-xl font-semibold text-text-strong">
@@ -383,7 +324,7 @@ export default function HomePage() {
 
             <motion.div
               {...fadeInUp}
-              transition={{ delay: 0.2, duration: 0.6, ease: easing }}
+              transition={{ delay: 0.2, duration: 0.5, ease: easing }}
               className="mt-12"
             >
               <div className="relative">
@@ -398,8 +339,15 @@ export default function HomePage() {
                     { step: 3, title: "Create Virtual Card", description: "Generate cards for online purchases instantly." },
                     { step: 4, title: "Start Transacting", description: "Send money, make payments, and manage your wallet." },
                   ].map((item, index) => (
-                    <div key={item.step} className="relative flex gap-6">
-                      <div className="relative z-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-primary bg-white text-lg font-semibold text-primary">
+                    <motion.div
+                      key={item.step}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ delay: index * 0.1, duration: 0.4, ease: easing }}
+                      className="relative flex gap-6"
+                    >
+                      <div className="relative z-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-primary bg-white text-lg font-semibold text-primary shadow-sm transition-all duration-200 hover:shadow-md">
                         {item.step}
                       </div>
                       <div className="flex-1 pb-8">
@@ -410,9 +358,9 @@ export default function HomePage() {
                           {item.description}
                         </p>
                       </div>
-              </div>
-            ))}
-          </div>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </motion.div>
           </div>
@@ -435,10 +383,10 @@ export default function HomePage() {
 
             <motion.div
               {...fadeInUp}
-              transition={{ delay: 0.2, duration: 0.6, ease: easing }}
+              transition={{ delay: 0.2, duration: 0.5, ease: easing }}
               className="mt-12"
             >
-              <div className="overflow-hidden rounded-xl border border-border-subtle bg-slate-900 shadow-lg">
+              <div className="overflow-hidden rounded-2xl border border-border-subtle bg-slate-900 shadow-xl transition-all duration-200 hover:shadow-2xl">
                 <div className="border-b border-slate-700/50 bg-slate-800 px-4 py-3">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-red-500" />
@@ -505,77 +453,85 @@ export default function HomePage() {
               </p>
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Link href="/signup">
-                  <Button size="lg" className="bg-primary text-text-on-primary hover:bg-primary/90">
+                  <Button size="lg" className="bg-primary text-text-on-primary hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.97] active:translate-y-0 transition-all duration-200">
                     Get Started
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
                 <Link href="/auth/signin">
-                  <Button size="lg" variant="outline" className="border-border-subtle text-text-strong hover:bg-surface-base">
+                  <Button size="lg" variant="outline" className="border-border-subtle text-text-strong hover:bg-surface-base hover:-translate-y-0.5 hover:shadow-md active:scale-[0.97] active:translate-y-0 transition-all duration-200">
                     Sign In
                   </Button>
                 </Link>
               </div>
             </motion.div>
-        </div>
-      </section>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border-subtle bg-white px-6 py-12">
+      <footer className="border-t border-border-subtle bg-white px-6 py-16">
         <div className="container mx-auto max-w-6xl">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <div className="mb-4">
-                <span className="text-lg font-semibold text-text-strong">FinFlow</span>
+                <span className="text-lg font-semibold tracking-tight text-text-strong">FinFlow</span>
               </div>
-              <p className="text-sm text-text-muted">
+              <p className="text-sm leading-relaxed text-text-muted">
                 Production-ready wallet infrastructure for modern financial applications.
               </p>
             </div>
 
             <div>
-              <p className="mb-3 text-sm font-semibold text-text-strong">Product</p>
-              <ul className="space-y-2 text-sm text-text-muted">
+              <p className="mb-4 text-sm font-semibold text-text-strong">Product</p>
+              <ul className="space-y-3 text-sm text-text-muted">
                 <li>
-                  <Link href="/dashboard" className="hover:text-text-strong transition-colors">
+                  <Link href="/dashboard" className="hover:text-text-strong transition-colors inline-block">
                     Dashboard
                   </Link>
                 </li>
                 <li>
-                  <Link href="/signup" className="hover:text-text-strong transition-colors">
+                  <Link href="/signup" className="hover:text-text-strong transition-colors inline-block">
                     Get Started
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/auth/signin" className="hover:text-text-strong transition-colors inline-block">
+                    Sign In
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <p className="mb-3 text-sm font-semibold text-text-strong">Company</p>
-              <ul className="space-y-2 text-sm text-text-muted">
+              <p className="mb-4 text-sm font-semibold text-text-strong">Company</p>
+              <ul className="space-y-3 text-sm text-text-muted">
                 <li>
                   <button className="text-left hover:text-text-strong transition-colors">About</button>
                 </li>
                 <li>
                   <button className="text-left hover:text-text-strong transition-colors">Security</button>
                 </li>
+                <li>
+                  <button className="text-left hover:text-text-strong transition-colors">Documentation</button>
+                </li>
               </ul>
             </div>
 
             <div>
-              <p className="mb-3 text-sm font-semibold text-text-strong">Legal</p>
-              <ul className="space-y-2 text-sm text-text-muted">
+              <p className="mb-4 text-sm font-semibold text-text-strong">Legal</p>
+              <ul className="space-y-3 text-sm text-text-muted">
                 <li>
-                  <button className="text-left hover:text-text-strong transition-colors">Privacy</button>
+                  <button className="text-left hover:text-text-strong transition-colors">Privacy Policy</button>
                 </li>
                 <li>
-                  <button className="text-left hover:text-text-strong transition-colors">Terms</button>
+                  <button className="text-left hover:text-text-strong transition-colors">Terms of Service</button>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-8 border-t border-border-subtle pt-8 text-center text-sm text-text-muted">
+          <div className="mt-12 border-t border-border-subtle pt-8 text-center text-sm text-text-muted">
             © {new Date().getFullYear()} FinFlow. All rights reserved.
           </div>
         </div>
