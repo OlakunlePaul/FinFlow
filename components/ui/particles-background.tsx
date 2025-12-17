@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useCallback } from "react"
 import { cn } from "@/lib/utils"
 
 interface ParticlesBackgroundProps {
@@ -28,29 +28,19 @@ export function ParticlesBackground({
   const circles = useRef<any[]>([])
   const mousePosition = useRef({ x: 0, y: 0 })
   const canvasSize = useRef({ w: 0, h: 0 })
+  const animationFrameRef = useRef<number | null>(null)
   const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1
-
+  
+  // Store latest prop values in refs so they're accessible in stable callbacks
+  const quantityRef = useRef(quantity)
+  const sizeRef = useRef(size)
+  const colorRef = useRef(color)
+  
   useEffect(() => {
-    if (canvasRef.current) {
-      context.current = canvasRef.current.getContext("2d")
-    }
-    initCanvas()
-    animate()
-    window.addEventListener("resize", initCanvas)
-
-    return () => {
-      window.removeEventListener("resize", initCanvas)
-    }
-  }, [color, quantity, size])
-
-  useEffect(() => {
-    initCanvas()
-  }, [refresh])
-
-  const initCanvas = () => {
-    resizeCanvas()
-    drawParticles()
-  }
+    quantityRef.current = quantity
+    sizeRef.current = size
+    colorRef.current = color
+  }, [quantity, size, color])
 
   type Circle = {
     x: number
@@ -65,16 +55,14 @@ export function ParticlesBackground({
     magnetism: number
   }
 
-  const resizeCanvas = () => {
-    if (canvasContainerRef.current && canvasRef.current && context.current) {
-      circles.current.length = 0
-      canvasSize.current.w = canvasContainerRef.current.offsetWidth
-      canvasSize.current.h = canvasContainerRef.current.offsetHeight
-      canvasRef.current.width = canvasSize.current.w * dpr
-      canvasRef.current.height = canvasSize.current.h * dpr
-      canvasRef.current.style.width = `${canvasSize.current.w}px`
-      canvasRef.current.style.height = `${canvasSize.current.h}px`
-      context.current.scale(dpr, dpr)
+  const clearContext = () => {
+    if (context.current) {
+      context.current.clearRect(
+        0,
+        0,
+        canvasSize.current.w,
+        canvasSize.current.h
+      )
     }
   }
 
@@ -83,7 +71,7 @@ export function ParticlesBackground({
     const y = Math.floor(Math.random() * canvasSize.current.h)
     const translateX = 0
     const translateY = 0
-    const pSize = Math.floor(Math.random() * 2) + size
+    const pSize = Math.floor(Math.random() * 2) + sizeRef.current
     const alpha = 0
     const targetAlpha = parseFloat((Math.random() * 0.6 + 0.1).toFixed(1))
     const dx = (Math.random() - 0.5) * 0.1
@@ -109,7 +97,16 @@ export function ParticlesBackground({
       context.current.translate(translateX, translateY)
       context.current.beginPath()
       context.current.arc(x, y, size, 0, 2 * Math.PI)
-      context.current.fillStyle = color.replace("0.1", String(alpha))
+      
+      // Replace the opacity value in the rgba color string
+      // Handles formats like "rgba(255, 255, 255, 0.1)" or "rgba(255, 255, 255, 0.15)"
+      const colorWithAlpha = colorRef.current.replace(
+        /rgba?\((\d+,\s*\d+,\s*\d+),\s*[\d.]+\)/,
+        (match, rgbValues) => {
+          return `rgba(${rgbValues}, ${alpha})`
+        }
+      )
+      context.current.fillStyle = colorWithAlpha
       context.current.fill()
       context.current.setTransform(dpr, 0, 0, dpr, 0, 0)
 
@@ -119,25 +116,53 @@ export function ParticlesBackground({
     }
   }
 
-  const clearContext = () => {
-    if (context.current) {
-      context.current.clearRect(
-        0,
-        0,
-        canvasSize.current.w,
-        canvasSize.current.h
-      )
+  const resizeCanvas = () => {
+    if (canvasContainerRef.current && canvasRef.current && context.current) {
+      circles.current.length = 0
+      canvasSize.current.w = canvasContainerRef.current.offsetWidth
+      canvasSize.current.h = canvasContainerRef.current.offsetHeight
+      canvasRef.current.width = canvasSize.current.w * dpr
+      canvasRef.current.height = canvasSize.current.h * dpr
+      canvasRef.current.style.width = `${canvasSize.current.w}px`
+      canvasRef.current.style.height = `${canvasSize.current.h}px`
+      context.current.scale(dpr, dpr)
     }
   }
 
-  const drawParticles = () => {
+  const drawParticles = useCallback(() => {
     clearContext()
-    const particleCount = quantity
+    const particleCount = quantityRef.current
     for (let i = 0; i < particleCount; i++) {
       const circle = circleParams()
       drawCircle(circle)
     }
-  }
+  }, [])
+
+  const initCanvas = useCallback(() => {
+    resizeCanvas()
+    drawParticles()
+  }, [drawParticles])
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      context.current = canvasRef.current.getContext("2d")
+    }
+    initCanvas()
+    animate()
+    window.addEventListener("resize", initCanvas)
+
+    return () => {
+      window.removeEventListener("resize", initCanvas)
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current)
+        animationFrameRef.current = null
+      }
+    }
+  }, [initCanvas])
+
+  useEffect(() => {
+    initCanvas()
+  }, [refresh, initCanvas])
 
   const remapValue = (
     value: number,
@@ -196,7 +221,7 @@ export function ParticlesBackground({
         drawCircle(newCircle)
       }
     })
-    window.requestAnimationFrame(animate)
+    animationFrameRef.current = window.requestAnimationFrame(animate)
   }
 
   return (
