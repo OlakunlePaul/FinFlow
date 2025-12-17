@@ -98,7 +98,12 @@ export function ParticlesBackground({
   const drawCircle = useCallback((circle: Circle, update = false) => {
     if (context.current) {
       const { x, y, translateX, translateY, size, alpha } = circle
-      context.current.translate(translateX, translateY)
+      // Set transform with scale (dpr) and translation (translateX, translateY)
+      // setTransform(a, b, c, d, e, f) where:
+      // - a, d: horizontal and vertical scaling
+      // - b, c: skewing
+      // - e, f: horizontal and vertical translation
+      context.current.setTransform(dpr, 0, 0, dpr, translateX, translateY)
       context.current.beginPath()
       context.current.arc(x, y, size, 0, 2 * Math.PI)
       
@@ -112,6 +117,7 @@ export function ParticlesBackground({
       )
       context.current.fillStyle = colorWithAlpha
       context.current.fill()
+      // Reset transform to base scale for next draw
       context.current.setTransform(dpr, 0, 0, dpr, 0, 0)
 
       if (!update) {
