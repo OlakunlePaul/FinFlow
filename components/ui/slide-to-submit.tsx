@@ -141,6 +141,9 @@ export function SlideToSubmit({
   // Get current progress value for text color
   const [progressValue, setProgressValue] = useState(0)
   useEffect(() => {
+    // Set initial value
+    setProgressValue(progress.get())
+    // Subscribe to changes
     const unsubscribe = progress.on("change", (latest) => {
       setProgressValue(latest)
     })

@@ -51,8 +51,8 @@ export function SendMoneyModal({
   // Reset success state when the main modal closes
   useEffect(() => {
     if (!open) {
-      // Only clear timeout if we're not in the process of showing a success modal
-      if (!isShowingSuccessModalRef.current && successModalTimeoutRef.current) {
+      // Always clear timeout to prevent memory leaks and stale updates
+      if (successModalTimeoutRef.current) {
         clearTimeout(successModalTimeoutRef.current)
         successModalTimeoutRef.current = null
       }
@@ -300,7 +300,7 @@ export function SendMoneyModal({
               </p>
             </div>
 
-            <DialogFooter className="flex flex-col gap-4">
+            <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <Button
                 type="button"
                 variant="outline"
