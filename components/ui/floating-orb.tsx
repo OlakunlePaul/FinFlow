@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { motion, useMotionValue, useSpring } from "framer-motion"
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 interface FloatingOrbProps {
@@ -22,8 +22,14 @@ export function FloatingOrb({
 
   // Use spring for smooth, laggy follow effect
   const springConfig = { damping: 20, stiffness: 50 }
-  const x = useSpring(mouseX, springConfig)
-  const y = useSpring(mouseY, springConfig)
+  const xSpring = useSpring(mouseX, springConfig)
+  const ySpring = useSpring(mouseY, springConfig)
+  
+  // Create transform string that combines centering (-50%) with motion values
+  const transform = useTransform(
+    [xSpring, ySpring],
+    ([x, y]) => `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`
+  )
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -59,10 +65,7 @@ export function FloatingOrb({
           filter: `blur(${blur}px)`,
           left: "50%",
           top: "50%",
-          x: x,
-          y: y,
-          xPercent: -50,
-          yPercent: -50,
+          transform,
         }}
       />
     </div>

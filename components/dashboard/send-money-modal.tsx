@@ -96,12 +96,13 @@ export function SendMoneyModal({
 
   const executeTransfer = async (data: TransferForm) => {
     if (data.amount > balance) {
+      const error = new Error("Insufficient Balance")
       toast({
         title: "Insufficient Balance",
         description: "You don't have enough funds for this transfer",
         variant: "destructive",
       })
-      return
+      throw error
     }
 
     setIsSubmitting(true)
@@ -149,6 +150,8 @@ export function SendMoneyModal({
         description: error.message || "Failed to send money",
         variant: "destructive",
       })
+      // Re-throw error so SlideToSubmit can catch it and reset
+      throw error
     } finally {
       setIsSubmitting(false)
     }

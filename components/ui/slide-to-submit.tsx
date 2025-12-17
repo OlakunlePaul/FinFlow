@@ -89,9 +89,15 @@ export function SlideToSubmit({
       x.set(maxX)
       
       // Trigger onSubmit
-      Promise.resolve(onSubmit()).finally(() => {
-        setIsLoading(false)
-      })
+      Promise.resolve(onSubmit())
+        .catch(() => {
+          // On error, reset the component so user can try again
+          setIsCompleted(false)
+          x.set(0)
+        })
+        .finally(() => {
+          setIsLoading(false)
+        })
     } else {
       // Not enough - spring back to start
       x.set(0)
