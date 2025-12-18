@@ -2,6 +2,7 @@
 
 import { Suspense } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Check, Code, Shield, Zap, Globe, Plus, Send, Download } from "lucide-react"
@@ -95,7 +96,13 @@ export default function HomePage() {
                         </nav>
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary/40 to-accent/40" />
+                        <Image
+                          src="https://i.pravatar.cc/150?img=12"
+                          alt="Profile"
+                          width={36}
+                          height={36}
+                          className="h-9 w-9 rounded-full object-cover border border-border-subtle"
+                        />
                       </div>
                     </div>
                   </div>
